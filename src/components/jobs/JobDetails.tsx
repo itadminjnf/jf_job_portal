@@ -158,8 +158,8 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
       return;
     }
     const digits = cleanPhone.replace(/\D/g, '');
-    if (digits.length < 7) {
-      setFormError('Please enter a valid phone number.');
+    if (digits.length < 8 || digits.length > 15) {
+      setFormError('Please enter a valid phone number (between 8 and 15 digits, e.g. +31...).');
       return;
     }
 
@@ -182,22 +182,47 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
     try {
       setFormStatus('submitting');
 
-      // 1. Data set karna (FormData create kiya)
-      const formData = new FormData();
-      formData.append('jobId', String(job.id));
-      formData.append('jobTitle', job.title);
-      formData.append('firstName', firstName.trim());
-      formData.append('lastName', lastName.trim());
-      formData.append('phone', phone.trim());
-      formData.append('email', email.trim());
-      if (cvFile) {
-        formData.append('cv', cvFile);
+      // 1. Upload CV to /api/files
+      const fileFormData = new FormData();
+      fileFormData.append('file', cvFile);
+
+      const fileResponse = await fetch('/api/files', {
+        method: 'POST',
+        body: fileFormData,
+      });
+
+      const fileData = await fileResponse.json();
+      console.log('[Files API Response]:', fileData);
+
+      if (!fileResponse.ok) {
+        throw new Error(fileData.error || 'Failed to upload CV file. Please try again.');
       }
 
-      // 2. Normal POST API call karna
-      const response = await fetch('/api/apply', {
+      const fileId = Array.isArray(fileData) ? fileData[0]?.id : fileData.id;
+      if (!fileId) {
+        throw new Error('CV upload did not return a valid file ID.');
+      }
+
+      // 2. Submit Application to /api/vacancy_application/{vacancyId}
+      const response = await fetch(`/api/vacancy_application/${encodeURIComponent(String(job.id))}`, {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          answers: {
+            q1356387: firstName.trim(),
+            q1356388: lastName.trim(),
+            q1356389: email.trim(),
+            q1356390: cleanPhone,
+            q1356391: String(fileId),
+            q1356392: ['1'],
+            'q-666': ['1'],
+          },
+          metaData: {
+            referer: typeof window !== 'undefined' ? window.location.href : null,
+          },
+        }),
       });
 
       const data = await response.json();
