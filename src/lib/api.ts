@@ -38,8 +38,13 @@ export const API_ENDPOINTS = {
     bySlug: (slug: string) => `/vacancies/slug/${encodeURIComponent(slug)}?includeUnpublishedTextfields=true`,
     details: (id: string | number) => `/vacancies/${encodeURIComponent(String(id))}?includeUnpublishedTextfields=true`,
   },
+  files: {
+    upload: '/files',
+  },
   forms: {
     jobAlert: '/jobalert-form',
+    vacancyApplication: (vacancyId: string | number) => `/vacancy_application/${encodeURIComponent(String(vacancyId))}`,
+    // vacancyApplication: (vacancyId: string | number) => `/open_application/${encodeURIComponent(String(vacancyId))}`,
   },
 } as const;
 
@@ -1010,4 +1015,136 @@ export async function submitJobAlertSubscription(
 
   return (await response.json()) as OtysJobAlertSubmitResponse;
 }
+
+// ============================================================================
+// 6. OTYS FILE UPLOAD & VACANCY APPLICATION APIS
+// ============================================================================
+
+export interface OtysFileUploadResponseItem {
+  id: string;
+  name?: string;
+  mimeType?: string;
+  size?: number;
+  [key: string]: unknown;
+}
+
+/**
+ * Uploads a file (CV or document) to OTYS /api/files endpoint.
+ * Returns the raw JSON response object or array from OTYS.
+ */
+export async function uploadOtysFileRaw(
+  fileBlob: Blob | Buffer | Uint8Array,
+  filename: string
+): Promise<any> {
+  const formData = new FormData();
+  if (typeof Blob !== 'undefined' && fileBlob instanceof Blob) {
+    formData.append('file', fileBlob, filename);
+  } else {
+    const blob = new Blob([fileBlob as unknown as BlobPart], { type: 'application/octet-stream' });
+    formData.append('file', blob, filename);
+  }
+
+  const response = await authenticatedFetch(API_ENDPOINTS.files.upload, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => '');
+    throw new Error(`File upload to OTYS failed [${response.status}]: ${errorText}`);
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+/**
+ * Uploads a file (CV or document) to OTYS /api/files endpoint.
+ * Returns the generated string file ID.
+ */
+export async function uploadOtysFile(
+  fileBlob: Blob | Buffer | Uint8Array,
+  filename: string
+): Promise<string> {
+  const data = await uploadOtysFileRaw(fileBlob, filename);
+  let fileId = '';
+
+  if (Array.isArray(data) && data.length > 0 && data[0]?.id) {
+    fileId = String(data[0].id);
+  } else if (data && typeof data === 'object' && 'id' in data && data.id) {
+    fileId = String(data.id);
+  }
+
+  if (!fileId) {
+    throw new Error('OTYS /api/files did not return a valid file ID in response.');
+  }
+
+  return fileId;
+}
+
+/**
+ * Fetches the dynamic application form definition for a specific vacancy.
+ */
+export async function getVacancyApplicationForm(
+  vacancyId: string | number
+): Promise<OtysRawFormResponse> {
+  return await apiRequest<OtysRawFormResponse>(
+    API_ENDPOINTS.forms.vacancyApplication(vacancyId),
+    { method: 'GET' }
+  );
+}
+
+export interface OtysVacancyApplicationPayload {
+  answers: Record<string, string | string[]>;
+  metaData?: Record<string, unknown> | null;
+}
+
+/**
+ * Submits the application form for a specific vacancy.
+ */
+export async function submitVacancyApplication(
+  vacancyId: string | number,
+  payload: OtysVacancyApplicationPayload
+): Promise<any> {
+  console.log("payload 0001", payload);
+  const response = await authenticatedFetch(
+    API_ENDPOINTS.forms.vacancyApplication(vacancyId),
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/ld+json',
+        Accept: 'application/ld+json, application/json',
+      },
+      body: JSON.stringify(payload),
+    }
+  );
+
+  if (!response.ok) {
+    const errorBody = await response.text().catch(() => '');
+    let detailMsg = errorBody;
+
+    try {
+      const parsed = JSON.parse(errorBody);
+      if (Array.isArray(parsed.violations) && parsed.violations.length > 0) {
+        detailMsg = parsed.violations
+          .map((v: any) => `${v.message || v.code || 'Invalid field'}`)
+          .join('. ');
+      } else if (parsed.detail) {
+        detailMsg = parsed.detail;
+      } else if (parsed.description) {
+        detailMsg = parsed.description;
+      }
+    } catch {
+      // not JSON format
+    }
+
+    const err = new Error(detailMsg || `Vacancy application submission failed [${response.status}]`);
+    (err as any).status = response.status;
+    (err as any).detail = detailMsg;
+    throw err;
+  }
+
+  return await response.json();
+}
+
 
