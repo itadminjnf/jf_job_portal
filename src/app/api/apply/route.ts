@@ -204,6 +204,26 @@ export async function POST(request: NextRequest) {
     // Step 4: Submit to OTYS POST /api/vacancy_application/{vacancyId}
     const result = await submitVacancyApplication(jobId, payload);
 
+    // Step 5: Bind CV directly to candidate's dossier in OTYS Go! (OWS Manual Page 37-44)
+    let dossierId: string | null = null;
+    if (cv && cv instanceof File && cv.size > 0) {
+      try {
+        const { attachCvToCandidateDossierWorkflow } = await import('@/lib/otys-ows');
+        const arrayBuffer = await cv.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const dossierRes = await attachCvToCandidateDossierWorkflow({
+          fileContent: buffer,
+          fileName: cv.name || 'resume.pdf',
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+        });
+        dossierId = dossierRes.dossierId;
+        console.log('[Apply Route] CV successfully attached to Candidate Dossier:', dossierRes);
+      } catch (dossierErr) {
+        console.error('[Apply Route Dossier Attachment Error (non-fatal)]:', dossierErr);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Application submitted successfully!',
@@ -212,6 +232,7 @@ export async function POST(request: NextRequest) {
         jobTitle,
         candidate: `${firstName} ${lastName}`,
         fileId,
+        dossierId,
         otysResponse: result,
       },
     });

@@ -199,7 +199,8 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
       }
 
       const fileId = Array.isArray(fileData) ? fileData[0]?.id : fileData.id;
-      if (!fileId) {
+      const owsFileUid = fileData.owsFileUid || null;
+      if (!fileId && !owsFileUid) {
         throw new Error('CV upload did not return a valid file ID.');
       }
 
@@ -210,12 +211,17 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          email: email.trim(),
+          phone: cleanPhone,
+          owsFileUid: owsFileUid,
           answers: {
             q1356387: firstName.trim(),
             q1356388: lastName.trim(),
             q1356389: email.trim(),
             q1356390: cleanPhone,
-            q1356391: String(fileId),
+            q1356391: String(fileId || owsFileUid),
             q1356392: ['1'],
             'q-666': ['1'],
           },
