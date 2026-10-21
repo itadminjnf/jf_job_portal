@@ -4,6 +4,13 @@ import {
   submitVacancyApplication,
   OtysRawFormResponse,
 } from '@/lib/api';
+import {
+  loginOws,
+  logoutOws,
+  getOrCreateCandidateOuid,
+  attachDocumentToCandidateDossier,
+  uploadFileToOws,
+} from '@/lib/otys-ows';
 
 export const dynamic = 'force-dynamic';
 
@@ -104,6 +111,7 @@ export async function GET(
 /**
  * POST /api/vacancy_application/[vacancyId]
  * Submits the application form answers for a specific vacancy to OTYS.
+ * Also binds the uploaded CV directly to the candidate's dossier in OTYS Go!
  */
 export async function POST(
   request: NextRequest,
@@ -123,37 +131,59 @@ export async function POST(
     let payloadAnswers: Record<string, string | string[]> = {};
     let clientMetaData: Record<string, unknown> | undefined = undefined;
 
+    let candidateFirstName = '';
+    let candidateLastName = '';
+    let candidateEmail = '';
+    let candidatePhone = '';
+    let candidateOwsFileUid: string | null = null;
+    let uploadedFileObj: File | null = null;
+
     if (contentType.includes('application/json')) {
       const body = await request.json();
       clientMetaData = body.metaData;
 
+      candidateFirstName = body.firstName ? String(body.firstName).trim() : '';
+      candidateLastName = body.lastName ? String(body.lastName).trim() : '';
+      candidateEmail = body.email ? String(body.email).trim() : '';
+      candidatePhone = body.phone ? String(body.phone).trim() : '';
+      candidateOwsFileUid = body.owsFileUid ? String(body.owsFileUid).trim() : null;
+
       if (body.answers) {
         payloadAnswers = body.answers;
-      } else {
-        // If candidate fields are provided in JSON
+        // Fallback names from answers if not provided at top-level
         const qMap = resolveQuestionIds();
-        if (body.firstName) payloadAnswers[qMap.firstNameId] = String(body.firstName).trim();
-        if (body.lastName) payloadAnswers[qMap.lastNameId] = String(body.lastName).trim();
-        if (body.email) payloadAnswers[qMap.emailId] = String(body.email).trim();
-        if (body.phone) payloadAnswers[qMap.phoneId] = String(body.phone).trim();
+        if (!candidateFirstName && body.answers[qMap.firstNameId]) {
+          candidateFirstName = String(body.answers[qMap.firstNameId]).trim();
+        }
+        if (!candidateLastName && body.answers[qMap.lastNameId]) {
+          candidateLastName = String(body.answers[qMap.lastNameId]).trim();
+        }
+      } else {
+        const qMap = resolveQuestionIds();
+        if (candidateFirstName) payloadAnswers[qMap.firstNameId] = candidateFirstName;
+        if (candidateLastName) payloadAnswers[qMap.lastNameId] = candidateLastName;
+        if (candidateEmail) payloadAnswers[qMap.emailId] = candidateEmail;
+        if (candidatePhone) payloadAnswers[qMap.phoneId] = candidatePhone;
         if (body.fileId) payloadAnswers[qMap.resumeId] = String(body.fileId);
         payloadAnswers[qMap.termsId] = ['1'];
         if (qMap.retentionId) payloadAnswers[qMap.retentionId] = ['1'];
       }
     } else if (contentType.includes('multipart/form-data')) {
       const formData = await request.formData();
-      const firstName = formData.get('firstName') as string | null;
-      const lastName = formData.get('lastName') as string | null;
-      const phone = formData.get('phone') as string | null;
-      const email = formData.get('email') as string | null;
-      const fileId = formData.get('fileId') as string | null;
+      candidateFirstName = (formData.get('firstName') as string | null)?.trim() || '';
+      candidateLastName = (formData.get('lastName') as string | null)?.trim() || '';
+      candidatePhone = (formData.get('phone') as string | null)?.trim() || '';
+      candidateEmail = (formData.get('email') as string | null)?.trim() || '';
+      const fileId = (formData.get('fileId') as string | null)?.trim() || '';
+      candidateOwsFileUid = (formData.get('owsFileUid') as string | null)?.trim() || null;
+      uploadedFileObj = (formData.get('file') || formData.get('cv')) as File | null;
 
       const qMap = resolveQuestionIds();
-      if (firstName) payloadAnswers[qMap.firstNameId] = firstName.trim();
-      if (lastName) payloadAnswers[qMap.lastNameId] = lastName.trim();
-      if (email) payloadAnswers[qMap.emailId] = email.trim();
-      if (phone) payloadAnswers[qMap.phoneId] = phone.trim();
-      if (fileId) payloadAnswers[qMap.resumeId] = fileId.trim();
+      if (candidateFirstName) payloadAnswers[qMap.firstNameId] = candidateFirstName;
+      if (candidateLastName) payloadAnswers[qMap.lastNameId] = candidateLastName;
+      if (candidateEmail) payloadAnswers[qMap.emailId] = candidateEmail;
+      if (candidatePhone) payloadAnswers[qMap.phoneId] = candidatePhone;
+      if (fileId) payloadAnswers[qMap.resumeId] = fileId;
       payloadAnswers[qMap.termsId] = ['1'];
       if (qMap.retentionId) payloadAnswers[qMap.retentionId] = ['1'];
     }
@@ -186,13 +216,59 @@ export async function POST(
       },
     };
 
+    // 1. Submit application to OTYS (creates candidate & links to vacancy)
     const result = await submitVacancyApplication(vacancyId, finalPayload);
+    console.log('[POST /api/vacancy_application Result]:', JSON.stringify(result));
+
+    // 2. OTYS OWS Step: Bind CV directly to candidate's dossier in OTYS Go!
+    let dossierId: string | null = null;
+    if (candidateFirstName || candidateLastName) {
+      try {
+        const sessionToken = await loginOws();
+        try {
+          // If we have a direct file upload from multipart, upload it to OWS first
+          if (!candidateOwsFileUid && uploadedFileObj && uploadedFileObj.size > 0) {
+            candidateOwsFileUid = await uploadFileToOws(
+              sessionToken,
+              uploadedFileObj,
+              uploadedFileObj.name || 'resume.pdf'
+            );
+          }
+
+          if (candidateOwsFileUid) {
+            // Find or get candidate UID in OTYS
+            const candidateUid = await getOrCreateCandidateOuid(
+              sessionToken,
+              candidateFirstName,
+              candidateLastName
+            );
+
+            if (candidateUid) {
+              dossierId = await attachDocumentToCandidateDossier(
+                sessionToken,
+                candidateUid,
+                candidateOwsFileUid,
+                `${candidateFirstName} ${candidateLastName}`.trim()
+              );
+              console.log(
+                `[OWS Success] CV '${candidateOwsFileUid}' attached to candidate '${candidateUid}' dossier ID: ${dossierId}`
+              );
+            }
+          }
+        } finally {
+          await logoutOws(sessionToken);
+        }
+      } catch (owsErr) {
+        console.error('[OWS Candidate Dossier Attachment Error (non-fatal)]:', owsErr);
+      }
+    }
 
     return NextResponse.json(
       {
         success: true,
         message: 'Application submitted successfully!',
         data: result,
+        dossierId,
       },
       { status: 201 }
     );
@@ -202,6 +278,7 @@ export async function POST(
     const rawMessage = err.detail || err.message || 'Internal Server Error';
 
     console.error('[POST /api/vacancy_application Error]:', rawMessage);
+
 
     if (status === 409 || rawMessage.toLowerCase().includes('already linked')) {
       return NextResponse.json(
