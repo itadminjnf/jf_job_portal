@@ -2,6 +2,29 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import {
+  Share2,
+  Bookmark,
+  CheckCircle2,
+  Check,
+  MapPin,
+  Briefcase,
+  Home,
+  Building2,
+  Users,
+  Globe,
+  Bell,
+  ArrowRight,
+  ChevronDown,
+  UploadCloud,
+  FileText,
+  Mail,
+  X,
+  AlertCircle,
+  Hash,
+  CircleDollarSign,
+  Sparkles,
+} from 'lucide-react';
 import { useJobAlertModal } from '@/context/JobAlertModalContext';
 import { Job } from '@/types/job';
 import { cleanRichHtml, translateDutchToEnglish } from '@/lib/utils';
@@ -59,20 +82,12 @@ function ExpandableContent({
             aria-expanded={expanded}
           >
             <span>{expanded ? 'Show less' : 'Show more'}</span>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            <ChevronDown
+              size={16}
+              strokeWidth={2.5}
               className={`${styles.chevronIcon} ${expanded ? styles.chevronRotated : ''}`}
               aria-hidden="true"
-            >
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+            />
           </button>
         </div>
       )}
@@ -271,13 +286,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
             className={styles.topActionBtn}
             title="Share Vacancy"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="18" cy="5" r="3"></circle>
-              <circle cx="6" cy="12" r="3"></circle>
-              <circle cx="18" cy="19" r="3"></circle>
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-            </svg>
+            <Share2 size={15} />
             <span>{copied ? 'Copied Link!' : 'Share'}</span>
           </button>
 
@@ -287,9 +296,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
             className={`${styles.topActionBtn} ${saved ? styles.savedActive : ''}`}
             title={saved ? 'Job Saved' : 'Save Job'}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-            </svg>
+            <Bookmark size={15} fill={saved ? 'currentColor' : 'none'} />
             <span>{saved ? 'Saved' : 'Save'}</span>
           </button>
         </div>
@@ -300,54 +307,44 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
         <h1 className={styles.jobTitle}>{job.title}</h1>
 
         <div className={styles.companyRow}>
-          <div className={styles.companyIconBox}>
-            <span>JF</span>
+          <div className={styles.companyLogoBox}>
+            <img
+              src="/app/favicon.ico"
+              alt="Jackson & Frank"
+              className={styles.companyLogoImg}
+            />
           </div>
           <span className={styles.companyName}>
             {job.company || 'Jackson & Frank Client'}
           </span>
           <span className={styles.verifiedBadge}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
+            <CheckCircle2 size={13} strokeWidth={2.5} />
             <span>Verified</span>
           </span>
         </div>
 
         <div className={styles.metaRow}>
           <div className={styles.metaItem}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
+            <MapPin size={15} />
             <span>{job.location}</span>
           </div>
 
           <div className={styles.metaItem}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-            </svg>
+            <Briefcase size={15} />
             <span>{displayType}</span>
           </div>
 
           <div className={styles.metaItem}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-              <polyline points="9 22 9 12 15 12 15 22"></polyline>
-            </svg>
+            <Home size={15} />
             <span>{displayWorkModel}</span>
           </div>
 
-          <div className={styles.metaItem}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="4" y1="9" x2="20" y2="9"></line>
-              <line x1="4" y1="15" x2="20" y2="15"></line>
-              <line x1="10" y1="3" x2="8" y2="21"></line>
-              <line x1="16" y1="3" x2="14" y2="21"></line>
-            </svg>
-            <span>Ref: {job.id}</span>
-          </div>
+          {Boolean((job as any).referenceNumber && typeof (job as any).referenceNumber === 'string' && !(job as any).referenceNumber.match(/^[a-zA-Z0-9_-]{12,}$/)) && (
+            <div className={styles.metaItem}>
+              <Hash size={15} />
+              <span>Ref: {(job as any).referenceNumber}</span>
+            </div>
+          )}
         </div>
       </header>
 
@@ -487,11 +484,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
               {/* Box 1: Base Salary */}
               <div className={styles.compBox}>
                 <div className={styles.compIcon}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-                    <line x1="12" y1="8" x2="12" y2="16"></line>
-                    <line x1="8" y1="12" x2="16" y2="12"></line>
-                  </svg>
+                  <CircleDollarSign size={20} />
                 </div>
                 <span className={styles.compLabel}>Base Salary</span>
                 <span className={styles.compValue}>{job.salary || 'Competitive / Neg.'}</span>
@@ -500,10 +493,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
               {/* Box 2: Job Type */}
               <div className={styles.compBox}>
                 <div className={styles.compIcon}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                  </svg>
+                  <Briefcase size={20} />
                 </div>
                 <span className={styles.compLabel}>Job Type</span>
                 <span className={styles.compValue}>{displayType}</span>
@@ -512,10 +502,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
               {/* Box 3: Work Model */}
               <div className={styles.compBox}>
                 <div className={styles.compIcon}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                  </svg>
+                  <Home size={20} />
                 </div>
                 <span className={styles.compLabel}>Work Model</span>
                 <span className={styles.compValue}>{displayWorkModel}</span>
@@ -524,10 +511,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
               {/* Box 4: Location */}
               <div className={styles.compBox}>
                 <div className={styles.compIcon}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                    <circle cx="12" cy="10" r="3"></circle>
-                  </svg>
+                  <MapPin size={20} />
                 </div>
                 <span className={styles.compLabel}>Location</span>
                 <span className={styles.compValue}>{job.location}</span>
@@ -546,11 +530,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
           <div className={styles.discoveryBanner}>
             <div className={styles.discoveryLeft}>
               <div className={styles.discoveryIcon}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="12" y1="16" x2="12" y2="12"></line>
-                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                </svg>
+                <Sparkles size={18} />
               </div>
               <span className={styles.discoveryText}>
                 Discover more {job.industry || 'IT'} opportunities in {job.city || 'Netherlands'}
@@ -558,10 +538,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
             </div>
             <Link href="/vacancies" className={styles.discoveryLink}>
               <span>Explore similar roles</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
+              <ArrowRight size={14} />
             </Link>
           </div>
         </main>
@@ -576,10 +553,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
               className={styles.primaryApplyBtn}
             >
               <span>Apply Now</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
+              <ArrowRight size={16} strokeWidth={2.5} />
             </button>
             <p className={styles.quickApplyNote}>
               Takes only 2 minutes • Quick apply with your CV
@@ -590,12 +564,18 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
           <div className={styles.sidebarCard}>
             <div className={styles.aboutHeader}>
               <div className={styles.aboutLogoBox}>
-                <span>JF</span>
+                <img
+                  src="/app/favicon.ico"
+                  alt="Jackson & Frank"
+                  className={styles.aboutLogoImg}
+                />
               </div>
               <div>
                 <div className={styles.aboutNameRow}>
                   <h3 className={styles.aboutTitle}>Jackson & Frank Client</h3>
-                  <span className={styles.aboutVerifiedCheck}>✓</span>
+                  <span className={styles.aboutVerifiedCheck}>
+                    <Check size={11} strokeWidth={3} />
+                  </span>
                 </div>
                 <span className={styles.aboutClientBadge}>VERIFIED CLIENT</span>
               </div>
@@ -607,19 +587,19 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
 
             <div className={styles.companyMetaList}>
               <div className={styles.companyMetaItem}>
-                <span className={styles.companyMetaIcon}>🏢</span>
+                <Building2 size={16} className={styles.companyMetaLucideIcon} />
                 <span className={styles.companyMetaText}>Industry: {job.industry || 'IT & Software'}</span>
               </div>
               <div className={styles.companyMetaItem}>
-                <span className={styles.companyMetaIcon}>👥</span>
+                <Users size={16} className={styles.companyMetaLucideIcon} />
                 <span className={styles.companyMetaText}>50 - 250 employees</span>
               </div>
               <div className={styles.companyMetaItem}>
-                <span className={styles.companyMetaIcon}>📍</span>
+                <MapPin size={16} className={styles.companyMetaLucideIcon} />
                 <span className={styles.companyMetaText}>Headquarters: {job.location || 'Netherlands'}</span>
               </div>
               <div className={styles.companyMetaItem}>
-                <span className={styles.companyMetaIcon}>🌐</span>
+                <Globe size={16} className={styles.companyMetaLucideIcon} />
                 <a
                   href="https://www.jacksonandfrank.com"
                   target="_blank"
@@ -638,7 +618,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
               className={styles.viewProfileBtn}
             >
               <span>View Company Profile</span>
-              <span>→</span>
+              <ArrowRight size={14} />
             </a>
           </div>
 
@@ -665,10 +645,12 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
                 </p>
                 {job.consultant?.email ? (
                   <a href={`mailto:${job.consultant.email}`} className={styles.consultantEmailLink}>
+                    <Mail size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
                     {job.consultant.email}
                   </a>
                 ) : (
                   <a href="mailto:careers@jacksonandfrank.com" className={styles.consultantEmailLink}>
+                    <Mail size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
                     careers@jacksonandfrank.com
                   </a>
                 )}
@@ -693,8 +675,12 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
                     href={`/vacancies/${sJob.id}`}
                     className={styles.similarItem}
                   >
-                    <div className={styles.similarIconBox}>
-                      <span>JF</span>
+                    <div className={styles.similarLogoBox}>
+                      <img
+                        src="/app/favicon.ico"
+                        alt="Jackson & Frank"
+                        className={styles.similarLogoImg}
+                      />
                     </div>
                     <div className={styles.similarContent}>
                       <h4 className={styles.similarTitle}>{sJob.title}</h4>
@@ -712,10 +698,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
           {/* Sidebar 5: Get Job Alerts */}
           <div className={styles.alertCard}>
             <div className={styles.alertIconBox}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-              </svg>
+              <Bell size={20} color="#2563EB" />
             </div>
             <h3 className={styles.alertTitle}>Get Job Alerts</h3>
             <p className={styles.alertDesc}>
@@ -741,7 +724,9 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
 
         {formStatus === 'success' ? (
           <div className={styles.successMessage}>
-            <div className={styles.successIcon}>✓</div>
+            <div className={styles.successIcon}>
+              <CheckCircle2 size={30} color="#16A34A" />
+            </div>
             <h3>Application Submitted Successfully!</h3>
             <p>
               Thank you, {firstName || 'Applicant'}. We have received your application for{' '}
@@ -759,11 +744,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
           <form onSubmit={handleSubmitApplication} className={styles.appForm}>
             {formError && (
               <div className={styles.formErrorBanner}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="12" y1="8" x2="12" y2="12"></line>
-                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                </svg>
+                <AlertCircle size={16} />
                 <span>{formError}</span>
               </div>
             )}
@@ -837,7 +818,9 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
 
                   {cvFile ? (
                     <div className={styles.uploadedFileBox}>
-                      <div className={styles.fileIcon}>📄</div>
+                      <div className={styles.fileIcon}>
+                        <FileText size={22} color="#1E3A8A" />
+                      </div>
                       <div className={styles.fileDetails}>
                         <span className={styles.fileName}>{cvFile.name}</span>
                         <span className={styles.fileSize}>
@@ -853,17 +836,13 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
                         className={styles.removeFileBtn}
                         title="Remove File"
                       >
-                        ✕
+                        <X size={15} />
                       </button>
                     </div>
                   ) : (
                     <div className={styles.dropZoneContent}>
                       <div className={styles.uploadCloudIcon}>
-                        <svg width="48" height="42" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
-                          <path d="M12 12v8"></path>
-                          <path d="m16 15-4-4-4 4"></path>
-                        </svg>
+                        <UploadCloud size={44} color="#1E3A8A" strokeWidth={1.8} />
                       </div>
                       <div className={styles.dropZoneTexts}>
                         <span className={styles.uploadPrompt}>

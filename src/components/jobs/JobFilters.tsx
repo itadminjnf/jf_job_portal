@@ -18,7 +18,7 @@ export function JobFilters({
   onTypeChange,
   onClear,
 }: JobFiltersProps) {
-  const locations = ['All Locations', 'Netherlands', 'India', 'Germany', 'Poland'];
+  const locations = ['All Locations'];
   const jobTypes = ['All Types', 'Full Time', 'Permanent', 'Contract'];
 
   return (

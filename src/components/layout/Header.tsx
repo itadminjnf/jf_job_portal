@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -13,7 +13,25 @@ import styles from './Header.module.css';
 export function Header() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [vacanciesCount, setVacanciesCount] = useState<number | null>(null);
   const { openJobAlertModal } = useJobAlertModal();
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/api/vacancies/count')
+      .then((res) => res.json())
+      .then((data) => {
+        if (isMounted && typeof data?.count === 'number' && data.count > 0) {
+          setVacanciesCount(data.count);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load vacancies count', err);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <header className={styles.header}>
@@ -36,6 +54,7 @@ export function Header() {
         <nav className={styles.nav} aria-label="Main Navigation">
           {mainNavigation.map((item) => {
             const isJobAlert = item.href === '/job-alert';
+            const isVacancies = item.href === '/vacancies';
             const isActive = pathname === item.href;
             return (
               <Link
@@ -49,7 +68,12 @@ export function Header() {
                   }
                 }}
               >
-                {item.name}
+                <span>{item.name}</span>
+                {isVacancies && vacanciesCount !== null && vacanciesCount > 0 && (
+                  <span className={styles.navBadge} aria-label={`${vacanciesCount} active vacancies`}>
+                    {vacanciesCount}
+                  </span>
+                )}
               </Link>
             );
           })}
@@ -75,6 +99,7 @@ export function Header() {
       <MobileMenu
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
+        vacanciesCount={vacanciesCount}
       />
     </header>
   );

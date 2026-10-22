@@ -106,18 +106,25 @@
   flex-wrap: wrap;
 }
 
-.companyIconBox {
-  width: 26px;
-  height: 26px;
-  background: #0F1F3D;
-  color: #ffffff;
-  border-radius: 5px;
-  display: flex;
+.companyLogoBox {
+  width: 32px;
+  height: 32px;
+  background: #eaecef;
+  border-radius: 6px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
   flex-shrink: 0;
+  overflow: hidden;
+  padding: 4px;
+}
+
+.companyLogoImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 3px;
 }
 
 .companyName {
@@ -297,17 +304,17 @@
 }
 
 /* Suppress redundant or empty <br> tags that cause huge spacing in lists and headers */
-.richContent ul > br,
-.richContent ol > br,
-.richContent li > br:last-child,
-.richContent h1 + br,
-.richContent h2 + br,
-.richContent h3 + br,
-.richContent h4 + br,
-.richContent h5 + br,
-.richContent h6 + br,
-.richContent ul + br,
-.richContent ol + br {
+.richContent ul>br,
+.richContent ol>br,
+.richContent li>br:last-child,
+.richContent h1+br,
+.richContent h2+br,
+.richContent h3+br,
+.richContent h4+br,
+.richContent h5+br,
+.richContent h6+br,
+.richContent ul+br,
+.richContent ol+br {
   display: none !important;
 }
 
@@ -818,17 +825,24 @@
 }
 
 .aboutLogoBox {
-  width: 40px;
-  height: 40px;
-  background: #0F1F3D;
-  color: #ffffff;
+  width: 44px;
+  height: 44px;
+  background: #eeeff1;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 15px;
   flex-shrink: 0;
+  overflow: hidden;
+  padding: 6px;
+}
+
+.aboutLogoImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 4px;
 }
 
 .aboutNameRow {
@@ -845,16 +859,15 @@
 }
 
 .aboutVerifiedCheck {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: #2563EB;
   color: #ffffff;
-  font-size: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
+  flex-shrink: 0;
 }
 
 .aboutClientBadge {
@@ -876,20 +889,23 @@
 .companyMetaList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 16px;
-  font-size: 13px;
+  gap: 12px;
+  margin-bottom: 18px;
+  font-size: 13.5px;
   color: #334155;
 }
 
 .companyMetaItem {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  color: #334155;
+  font-weight: 500;
 }
 
-.companyMetaIcon {
-  font-size: 14px;
+.companyMetaLucideIcon {
+  color: #64748B;
+  flex-shrink: 0;
 }
 
 .companyWebLink {
@@ -1015,18 +1031,25 @@
   background: #F8FAFC;
 }
 
-.similarIconBox {
-  width: 28px;
-  height: 28px;
-  background: #0F1F3D;
-  color: #ffffff;
-  border-radius: 4px;
+.similarLogoBox {
+  width: 30px;
+  height: 30px;
+  background: #e3e5e9;
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  font-weight: 700;
   flex-shrink: 0;
+  overflow: hidden;
+  padding: 4px;
+}
+
+.similarLogoImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 3px;
 }
 
 .similarContent {

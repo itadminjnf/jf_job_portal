@@ -8,6 +8,7 @@ import {
   buildJobAlertPayload,
 } from '@/lib/api';
 import styles from './DynamicJobAlertForm.module.css';
+import { FileText, Globe, Building2, Sparkles, Calendar } from 'lucide-react';
 
 interface DynamicJobAlertFormProps {
   initialFormDefinition?: NormalizedJobAlertForm;
@@ -464,27 +465,32 @@ export function DynamicJobAlertForm({
                 <div className={styles.thankYouChips}>
                   {contractLabels.map((l) => (
                     <span key={l} className={styles.thankYouChip}>
-                      📋 {l}
+                      <FileText size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                      {l}
                     </span>
                   ))}
                   {languageLabels.map((l) => (
                     <span key={l} className={styles.thankYouChip}>
-                      🌐 {l}
+                      <Globe size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                      {l}
                     </span>
                   ))}
                   {brancheLabels.map((l) => (
                     <span key={l} className={styles.thankYouChip}>
-                      🏢 {l}
+                      <Building2 size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                      {l}
                     </span>
                   ))}
                   {skillLabels.map((l) => (
                     <span key={l} className={styles.thankYouChip}>
-                      ⭐ {l}
+                      <Sparkles size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                      {l}
                     </span>
                   ))}
                   {periodLabel && (
                     <span className={styles.thankYouChip}>
-                      📅 {periodLabel}
+                      <Calendar size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                      {periodLabel}
                     </span>
                   )}
                 </div>
