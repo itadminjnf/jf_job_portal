@@ -5,10 +5,6 @@ export const featuredJobs: Job[] = []
 
 export const filterChips: FilterChip[] = [
   { id: 'remote', label: 'Remote', type: 'workstyle' },
-  { id: 'netherlands', label: 'Netherlands', type: 'location' },
-  { id: 'india', label: 'India', type: 'location' },
-  { id: 'poland', label: 'Poland', type: 'location' },
-  { id: 'germany', label: 'Germany', type: 'location' },
   { id: 'contract', label: 'Contract', type: 'type' },
   { id: 'permanent', label: 'Permanent', type: 'type' },
   { id: 'it-software', label: 'IT & Software', type: 'industry' },

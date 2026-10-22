@@ -11,9 +11,10 @@ import styles from './MobileMenu.module.css';
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
+  vacanciesCount?: number | null;
 }
 
-export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+export function MobileMenu({ isOpen, onClose, vacanciesCount }: MobileMenuProps) {
   const pathname = usePathname();
   const { openJobAlertModal } = useJobAlertModal();
 
@@ -54,6 +55,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           <ul className={styles.navList}>
             {mainNavigation.map((item) => {
               const isJobAlert = item.href === '/job-alert';
+              const isVacancies = item.href === '/vacancies';
               const isActive = pathname === item.href;
               return (
                 <li key={item.name}>
@@ -70,7 +72,10 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                       }
                     }}
                   >
-                    {item.name}
+                    <span>{item.name}</span>
+                    {isVacancies && typeof vacanciesCount === 'number' && vacanciesCount > 0 && (
+                      <span className={styles.navBadge}>{vacanciesCount}</span>
+                    )}
                   </Link>
                 </li>
               );

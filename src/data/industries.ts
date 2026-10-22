@@ -29,13 +29,6 @@ export const categoriesByTab: Record<CategoryTab, CategoryItem[]> = {
     { id: 'consulting', title: 'Advisory & Strategy', jobCount: '220+ jobs', icon: 'scale' },
   ],
   'By Location': [
-    { id: 'netherlands', title: 'Netherlands', jobCount: '1,450+ jobs', icon: 'globe' },
-    { id: 'germany', title: 'Germany', jobCount: '980+ jobs', icon: 'globe' },
-    { id: 'india', title: 'India', jobCount: '1,120+ jobs', icon: 'globe' },
-    { id: 'poland', title: 'Poland', jobCount: '480+ jobs', icon: 'globe' },
-    { id: 'united-kingdom', title: 'United Kingdom', jobCount: '760+ jobs', icon: 'globe' },
-    { id: 'singapore', title: 'Singapore', jobCount: '320+ jobs', icon: 'globe' },
-    { id: 'united-states', title: 'United States', jobCount: '890+ jobs', icon: 'globe' },
     { id: 'remote-global', title: 'Fully Remote', jobCount: '650+ jobs', icon: 'laptop' },
   ],
   'By Job Type': [

@@ -662,6 +662,29 @@ export async function getAllJobs(filterParams?: VacancyFilterParams): Promise<Jo
   }
 }
 
+export async function getVacanciesCount(): Promise<number> {
+  const endpoint = buildVacanciesUrl({ itemsPerPage: 100 });
+
+  try {
+    const rawData = await apiRequest<any>(endpoint, { method: 'GET' }, null);
+    if (rawData) {
+      if (typeof rawData['hydra:totalItems'] === 'number') {
+        return rawData['hydra:totalItems'];
+      }
+      if (typeof rawData.totalItems === 'number') {
+        return rawData.totalItems;
+      }
+      if (typeof rawData.total === 'number') {
+        return rawData.total;
+      }
+    }
+    const jobs = mapOtysCollectionToJobs(rawData);
+    return jobs.length > 0 ? jobs.length : featuredJobs.length;
+  } catch {
+    return featuredJobs.length;
+  }
+}
+
 export async function getJobBySlug(slug: string): Promise<Job | undefined> {
   const fallback = featuredJobs.find((job) => job.slug === slug || job.id === slug);
 
