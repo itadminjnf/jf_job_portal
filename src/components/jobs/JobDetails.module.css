@@ -1162,3 +1162,227 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   ERROR & RETRY POPUP MODAL
+   ============================================================ */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.68);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.18s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.errorModalCard {
+  background: #ffffff;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 490px;
+  padding: 32px 28px 28px;
+  box-shadow: 0 24px 50px -12px rgba(15, 23, 42, 0.35), 0 8px 20px -4px rgba(15, 23, 42, 0.12);
+  position: relative;
+  text-align: center;
+  animation: scaleUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modalCloseBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: #F1F5F9;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modalCloseBtn:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+.modalIconWrapper {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalIconFileSize {
+  background: #FFF7ED;
+  color: #EA580C;
+  border: 2px solid #FFEDD5;
+}
+
+.modalIconNetwork {
+  background: #EFF6FF;
+  color: #2563EB;
+  border: 2px solid #DBEAFE;
+}
+
+.modalIconGeneric {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 2px solid #FEE2E2;
+}
+
+.modalBadge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  margin-bottom: 12px;
+}
+
+.badgeFileSize {
+  background: #FFEDD5;
+  color: #C2410C;
+}
+
+.badgeNetwork {
+  background: #DBEAFE;
+  color: #1D4ED8;
+}
+
+.badgeGeneric {
+  background: #FEE2E2;
+  color: #B91C1C;
+}
+
+.modalTitle {
+  font-size: 21px;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.modalDesc {
+  font-size: 14.5px;
+  color: #475569;
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+
+.modalTipBox {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 13px;
+  color: #334155;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.45;
+}
+
+.modalTipIcon {
+  color: #F7931E;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.modalActions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.retryBtn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #F7931E;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(247, 147, 30, 0.3);
+}
+
+.retryBtn:hover {
+  background: #E58212;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(247, 147, 30, 0.4);
+}
+
+.cancelModalBtn {
+  flex: 0.8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #F1F5F9;
+  color: #475569;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cancelModalBtn:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+@media (max-width: 480px) {
+  .errorModalCard {
+    padding: 24px 18px 20px;
+  }
+
+  .modalActions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .retryBtn, .cancelModalBtn {
+    width: 100%;
+  }
+}

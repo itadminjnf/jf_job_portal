@@ -24,6 +24,11 @@ import {
   Hash,
   CircleDollarSign,
   Sparkles,
+  RefreshCw,
+  AlertTriangle,
+  WifiOff,
+  FileWarning,
+  HelpCircle,
 } from 'lucide-react';
 import { useJobAlertModal } from '@/context/JobAlertModalContext';
 import { Job } from '@/types/job';
@@ -111,6 +116,21 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [formError, setFormError] = useState('');
 
+  // Error & Retry Modal Popup State
+  const [errorModal, setErrorModal] = useState<{
+    isOpen: boolean;
+    type: 'file_size' | 'network' | 'format' | 'generic';
+    title: string;
+    message: string;
+    tip?: string;
+    actionText?: string;
+  }>({
+    isOpen: false,
+    type: 'generic',
+    title: '',
+    message: '',
+  });
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Clean HTML from OTYS
@@ -139,9 +159,44 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
     }
   };
 
+  const validateAndSetCvFile = (file: File): boolean => {
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB limit
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    const allowedExtensions = ['pdf', 'doc', 'docx'];
+
+    if (!ext || !allowedExtensions.includes(ext)) {
+      setErrorModal({
+        isOpen: true,
+        type: 'format',
+        title: 'Unsupported Document Format',
+        message: `The file format ".${ext || 'unknown'}" is not supported. Please upload your CV in PDF (.pdf) or Word (.doc, .docx) format.`,
+        tip: 'Tip: You can easily save your resume as a PDF in MS Word, Google Docs, or Pages.',
+        actionText: 'Choose Another File',
+      });
+      return false;
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      const sizeInMb = (file.size / (1024 * 1024)).toFixed(1);
+      setErrorModal({
+        isOpen: true,
+        type: 'file_size',
+        title: 'Document Size Exceeds 10 MB',
+        message: `Your file "${file.name}" is ${sizeInMb} MB, which exceeds our maximum upload limit of 10 MB.`,
+        tip: 'Please compress your document or remove high-resolution embedded images before uploading.',
+        actionText: 'Select Smaller File',
+      });
+      return false;
+    }
+
+    setCvFile(file);
+    setFormError('');
+    return true;
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setCvFile(e.target.files[0]);
+      validateAndSetCvFile(e.target.files[0]);
     }
   };
 
@@ -149,12 +204,14 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
     e.preventDefault();
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setCvFile(e.dataTransfer.files[0]);
+      validateAndSetCvFile(e.dataTransfer.files[0]);
     }
   };
 
-  const handleSubmitApplication = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitApplication = async (e?: React.FormEvent) => {
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     setFormError('');
 
     if (!firstName.trim()) {
@@ -185,7 +242,14 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
     }
 
     if (!cvFile) {
-      setFormError('CV is mandatory. Please upload your CV (.pdf, .doc, .docx).');
+      setErrorModal({
+        isOpen: true,
+        type: 'format',
+        title: 'CV File Required',
+        message: 'A resume/CV is required to apply for this vacancy. Please upload your CV in PDF (.pdf) or Word (.doc, .docx) format.',
+        tip: 'Click on the "Upload CV" box or drag & drop your file directly.',
+        actionText: 'Upload CV Now',
+      });
       return;
     }
 
@@ -197,6 +261,11 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
     try {
       setFormStatus('submitting');
 
+      // Check online status before upload
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        throw new Error('You appear to be offline. Please check your internet connection.');
+      }
+
       // 1. Upload CV to /api/files
       const fileFormData = new FormData();
       fileFormData.append('file', cvFile);
@@ -206,17 +275,20 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
         body: fileFormData,
       });
 
-      const fileData = await fileResponse.json();
+      const fileData = await fileResponse.json().catch(() => ({}));
       console.log('[Files API Response]:', fileData);
 
       if (!fileResponse.ok) {
-        throw new Error(fileData.error || 'Failed to upload CV file. Please try again.');
+        if (fileResponse.status === 413) {
+          throw new Error('Document size exceeds the server limit. Please upload a CV smaller than 10 MB.');
+        }
+        throw new Error(fileData?.error || 'Failed to upload CV file. Please try again.');
       }
 
       const fileId = Array.isArray(fileData) ? fileData[0]?.id : fileData.id;
       const owsFileUid = fileData.owsFileUid || null;
       if (!fileId && !owsFileUid) {
-        throw new Error('CV upload did not return a valid file ID.');
+        throw new Error('CV upload did not return a valid file ID. Please try again.');
       }
 
       // 2. Submit Application to /api/vacancy_application/{vacancyId}
@@ -246,13 +318,13 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to submit application. Please try again.');
+        throw new Error(data?.error || 'Failed to submit application to the server. Please try again.');
       }
 
-      // 3. Success state aur form clear karna
+      // 3. Success state and clear form
       setFormStatus('success');
       setFirstName('');
       setLastName('');
@@ -264,6 +336,67 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
       const message = err instanceof Error ? err.message : 'Failed to submit application';
       setFormError(message);
       setFormStatus('error');
+
+      const isNetwork =
+        (typeof navigator !== 'undefined' && !navigator.onLine) ||
+        (err instanceof TypeError && err.message.toLowerCase().includes('fetch')) ||
+        message.toLowerCase().includes('network') ||
+        message.toLowerCase().includes('failed to fetch') ||
+        message.toLowerCase().includes('offline');
+
+      const isDocSize =
+        message.toLowerCase().includes('size') ||
+        message.toLowerCase().includes('large') ||
+        message.toLowerCase().includes('413') ||
+        message.toLowerCase().includes('payload');
+
+      if (isDocSize) {
+        setErrorModal({
+          isOpen: true,
+          type: 'file_size',
+          title: 'Document Size Too Large',
+          message: 'The server rejected your CV because the file size is too large (maximum 10 MB).',
+          tip: 'Please compress your PDF/Word document or remove large images before re-uploading.',
+          actionText: 'Select Smaller CV & Re-apply',
+        });
+      } else if (isNetwork) {
+        setErrorModal({
+          isOpen: true,
+          type: 'network',
+          title: 'Network Connection Issue',
+          message: 'We were unable to communicate with the recruitment server. Please check your internet connection and retry.',
+          tip: 'All your application details are safely saved. Click "Retry Application" to send it again immediately.',
+          actionText: 'Retry Application',
+        });
+      } else {
+        setErrorModal({
+          isOpen: true,
+          type: 'generic',
+          title: 'Application Submission Issue',
+          message: message || 'Something went wrong while processing your application. Please re-apply.',
+          tip: 'Your entered details have been preserved. You can click "Re-apply Now" or review the form.',
+          actionText: 'Re-apply Now',
+        });
+      }
+    }
+  };
+
+  const handleRetryOrFix = () => {
+    const currentType = errorModal.type;
+    setErrorModal((prev) => ({ ...prev, isOpen: false }));
+
+    if (currentType === 'file_size' || currentType === 'format') {
+      setCvFile(null);
+      scrollToApply();
+      setTimeout(() => {
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+          fileInputRef.current.click();
+        }
+      }, 350);
+    } else {
+      // Direct retry
+      handleSubmitApplication();
     }
   };
 
@@ -873,6 +1006,101 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
           </form>
         )}
       </section>
+
+      {/* 5. Error & Retry Popup Modal */}
+      {errorModal.isOpen && (
+        <div
+          className={styles.modalBackdrop}
+          onClick={() => setErrorModal((prev) => ({ ...prev, isOpen: false }))}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="error-modal-title"
+        >
+          <div
+            className={styles.errorModalCard}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setErrorModal((prev) => ({ ...prev, isOpen: false }))}
+              className={styles.modalCloseBtn}
+              aria-label="Close modal"
+            >
+              <X size={18} />
+            </button>
+
+            {/* Icon Circle */}
+            <div
+              className={`${styles.modalIconWrapper} ${
+                errorModal.type === 'file_size' || errorModal.type === 'format'
+                  ? styles.modalIconFileSize
+                  : errorModal.type === 'network'
+                  ? styles.modalIconNetwork
+                  : styles.modalIconGeneric
+              }`}
+            >
+              {errorModal.type === 'file_size' || errorModal.type === 'format' ? (
+                <FileWarning size={32} />
+              ) : errorModal.type === 'network' ? (
+                <WifiOff size={32} />
+              ) : (
+                <AlertTriangle size={32} />
+              )}
+            </div>
+
+            {/* Error Category Badge */}
+            <span
+              className={`${styles.modalBadge} ${
+                errorModal.type === 'file_size' || errorModal.type === 'format'
+                  ? styles.badgeFileSize
+                  : errorModal.type === 'network'
+                  ? styles.badgeNetwork
+                  : styles.badgeGeneric
+              }`}
+            >
+              {errorModal.type === 'file_size'
+                ? 'DOCUMENT SIZE'
+                : errorModal.type === 'format'
+                ? 'FORMAT ISSUE'
+                : errorModal.type === 'network'
+                ? 'NETWORK ISSUE'
+                : 'SUBMISSION ISSUE'}
+            </span>
+
+            <h3 id="error-modal-title" className={styles.modalTitle}>
+              {errorModal.title}
+            </h3>
+
+            <p className={styles.modalDesc}>{errorModal.message}</p>
+
+            {errorModal.tip && (
+              <div className={styles.modalTipBox}>
+                <HelpCircle size={18} className={styles.modalTipIcon} />
+                <span>{errorModal.tip}</span>
+              </div>
+            )}
+
+            <div className={styles.modalActions}>
+              <button
+                type="button"
+                onClick={() => setErrorModal((prev) => ({ ...prev, isOpen: false }))}
+                className={styles.cancelModalBtn}
+              >
+                Edit Form
+              </button>
+
+              <button
+                type="button"
+                onClick={handleRetryOrFix}
+                className={styles.retryBtn}
+              >
+                <RefreshCw size={17} />
+                <span>{errorModal.actionText || 'Retry Application'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
