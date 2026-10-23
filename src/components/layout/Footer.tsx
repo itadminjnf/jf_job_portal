@@ -25,10 +25,6 @@ const opportunities = [
   { name: 'Vacancies', href: '/vacancies' },
   { name: 'Job Alert', href: '/job-alert' },
 ]
-const insights = [
-  { name: 'Blog', href: '/blog' },
-  { name: 'News', href: '/news' },
-]
 const company = [
   { name: 'About Jackson & Frank', href: 'https://www.jacksonandfrank.com/' },
   { name: 'Careers', href: '/vacancies' },
@@ -108,11 +104,6 @@ export default function Footer() {
                   {link.name}
                 </Link>
               ))}
-            </div>
-
-            <div className={styles.flCol}>
-              <h4>Insights</h4>
-              {insights.map(link => <Link key={link.name} href={link.href}>{link.name}</Link>)}
             </div>
 
             <div className={styles.flCol}>
