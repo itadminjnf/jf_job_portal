@@ -16,19 +16,19 @@ export const filterChips: FilterChip[] = [
 export const portalStatistics: StatisticItem[] = [
   {
     id: 'stat-jobs',
-    value: '5,000+',
-    label: 'Jobs Worldwide',
+    value: '1,400+',
+    label: 'Employees Placed',
     icon: 'briefcase',
   },
   {
     id: 'stat-companies',
-    value: '500+',
+    value: '700+',
     label: 'Trusted Companies',
     icon: 'building',
   },
   {
     id: 'stat-countries',
-    value: '50+',
+    value: '17+',
     label: 'Countries',
     icon: 'globe',
   },

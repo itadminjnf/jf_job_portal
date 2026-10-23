@@ -1,6 +1,7 @@
 .page {
-  padding: 20px 0 80px;
+  padding: 40px 0 80px;
   background-color: #F8FAFC;
+  margin-top: -25px;
 }
 
 .backLink {

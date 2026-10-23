@@ -7,7 +7,6 @@ import { LatestJobs } from '@/components/home/LatestJobs';
 import { JobCategories } from '@/components/home/JobCategories';
 import { HiringBanner } from '@/components/home/HiringBanner';
 import { GlobalPresence } from '@/components/home/GlobalPresence';
-import { TrustedCompanies } from '@/components/home/TrustedCompanies';
 import { Container } from '@/components/common/Container';
 import styles from './page.module.css';
 
@@ -41,9 +40,6 @@ export default function HomePage() {
           </div>
         </Container>
       </section>
-
-      {/* 9. Trusted Companies */}
-      <TrustedCompanies />
     </div>
   );
 }

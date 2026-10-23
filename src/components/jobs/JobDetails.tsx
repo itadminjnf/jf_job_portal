@@ -290,15 +290,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
             <span>{copied ? 'Copied Link!' : 'Share'}</span>
           </button>
 
-          <button
-            type="button"
-            onClick={() => setSaved(!saved)}
-            className={`${styles.topActionBtn} ${saved ? styles.savedActive : ''}`}
-            title={saved ? 'Job Saved' : 'Save Job'}
-          >
-            <Bookmark size={15} fill={saved ? 'currentColor' : 'none'} />
-            <span>{saved ? 'Saved' : 'Save'}</span>
-          </button>
+
         </div>
       </div>
 

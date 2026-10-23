@@ -24,15 +24,6 @@ export function JobCard({ job }: JobCardProps) {
             <span className={styles.salaryBadge}>{job.salary}</span>
           )}
         </div>
-
-        <button
-          className={`${styles.bookmarkBtn} ${isBookmarked ? styles.bookmarked : ''}`}
-          onClick={() => setIsBookmarked(!isBookmarked)}
-          aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark job'}
-          title={isBookmarked ? 'Saved' : 'Save job'}
-        >
-          <Bookmark size={18} fill={isBookmarked ? 'currentColor' : 'none'} />
-        </button>
       </div>
 
       {/* Job Title & Company */}
