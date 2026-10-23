@@ -1,23 +1,28 @@
-.header {
+/* ============================================================
+   FLOATING PILL NAVBAR DESIGN (JACKSON & FRANK)
+   ============================================================ */
+
+.headerWrapper {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 100;
   width: 100%;
-  height: var(--header-height);
-  background-color: var(--color-white);
-  border-bottom-left-radius: 28px;
-  border-bottom-right-radius: 28px;
-  box-shadow: 0 10px 30px -5px rgba(15, 31, 61, 0.12), 0 4px 12px -2px rgba(15, 31, 61, 0.06);
-  display: flex;
-  align-items: center;
-  transition: border-radius var(--transition-base), box-shadow var(--transition-base);
+  padding: 18px 24px 14px;
+  /* Deep navy blue background surrounding the pill */
+  transition: all 0.2s ease;
 }
 
-.inner {
+.pillContainer {
+  max-width: 1220px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 9999px;
+  height: 64px;
+  padding: 8px 12px 8px 36px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16), 0 3px 8px rgba(0, 0, 0, 0.08);
 }
 
 .left {
@@ -33,265 +38,184 @@
 }
 
 .logoImage {
-  height: 42px;
+  height: 36px;
   width: auto;
-}
-
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  margin-left: auto;
-}
-
-.navLink {
-  /* font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  text-decoration: none;
-  padding: 6px 2px;
-  transition: color var(--transition-fast);
-  white-space: nowrap; */
-
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  color: var(--ink);
-  font-size: 16px;
-  font-weight: 700;
-  padding: 8px 0;
-  transition: color 0.2s;
-  font-family: var(--sans);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.navLink:hover {
-  color: var(--color-blue);
-}
-
-.activeNavLink {
-  color: var(--color-blue);
-  font-weight: 600;
-}
-
-.navBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 19px;
-  height: 19px;
-  padding: 0 5px;
-  background: #2563EB;
-  color: #ffffff;
-  font-size: 10.5px;
-  font-weight: 700;
-  line-height: 1;
-  border-radius: 9999px;
-  margin-left: 4px;
-  transform: translateY(-8px);
-  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.3);
-  transition: transform 0.2s ease, background 0.2s ease;
-  pointer-events: none;
-  font-family: inherit;
-  letter-spacing: -0.02em;
-}
-
-.navLink:hover .navBadge {
-  background: #1D4ED8;
-  transform: translateY(-9px) scale(1.06);
-}
-
-.activeNavLink .navBadge {
-  background: #1D4ED8;
-  box-shadow: 0 2px 6px rgba(29, 78, 216, 0.4);
 }
 
 .right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 22px;
+  margin-left: auto;
+}
+
+/* Vacancies Nav Item */
+.navVacancies {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: 15.5px;
+  font-weight: 600;
+  color: #0F172A;
+  text-decoration: none;
+  padding: 8px 6px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+}
+
+.navVacancies:hover {
+  color: #2563EB;
+}
+
+.activeNav {
+  color: #2563EB;
+}
+
+/* Orange circular badge on top-right of Vacancies */
+.orangeBadge {
+  position: absolute;
+  top: 1px;
+  right: -13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background-color: #F7931E;
+  /* Vibrant orange matching screenshot */
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(247, 147, 30, 0.45);
+  pointer-events: none;
+  font-family: inherit;
+}
+
+/* Dark Navy Jobalert Pill Button */
+.jobAlertBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #142E5A;
+  /* Deep navy blue button matching screenshot */
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(20, 46, 90, 0.25);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.jobAlertBtn:hover {
+  background-color: #1A3A70;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(20, 46, 90, 0.35);
+}
+
+.bellIcon {
+  width: 18px;
+  height: 18px;
+  stroke: #ffffff;
   flex-shrink: 0;
 }
 
-.langSelector {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text);
-  padding: 8px 10px;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  cursor: pointer;
-  border: none;
-  transition: background-color var(--transition-fast);
-}
-
-.langSelector:hover {
-  background-color: var(--color-light);
-}
-
-.langDropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 8px;
-  background-color: var(--color-white);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  border-radius: var(--radius-md);
-  box-shadow: 0 12px 30px -4px rgba(15, 31, 61, 0.14), 0 4px 12px rgba(15, 31, 61, 0.06);
-  min-width: 170px;
-  padding: 6px;
-  z-index: 100;
-  animation: dropInFast 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes dropInFast {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.langOption {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  text-align: left;
-  padding: 8px 12px;
-  font-size: 13.5px;
-  color: var(--color-text);
-  border: none;
-  background: none;
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
-}
-
-.langOption:hover {
-  background-color: #FFF7ED;
-  color: var(--color-orange);
-}
-
-.langOptionActive {
-  background-color: #FFF7ED;
-  color: var(--color-orange);
-  font-weight: 600;
-}
-
-.langItemLeft {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.langWrapper {
-  position: relative;
-}
-
-.loginBtn {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-  padding: 8px 18px;
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
-  text-decoration: none;
-}
-
-.loginBtn:hover {
-  background-color: var(--color-light);
-  border-color: #CBD5E1;
-}
-
-.registerBtn {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-white);
-  background-color: var(--color-blue);
-  padding: 8px 20px;
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
-  text-decoration: none;
-}
-
-.registerBtn:hover {
-  background-color: var(--color-blue-dark);
-}
-
+/* Mobile Toggle Hamburger */
 .mobileToggle {
   display: none;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  color: var(--color-text);
-  background: transparent;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: #0F172A;
+  background: #F1F5F9;
   border: none;
   cursor: pointer;
+  transition: background-color 0.15s ease;
 }
 
 .mobileToggle:hover {
-  background-color: var(--color-light);
+  background-color: #E2E8F0;
 }
 
-/* Breakpoints */
-@media (max-width: 1200px) {
-  .nav {
-    gap: 12px;
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+  .headerWrapper {
+    padding: 12px 16px 8px;
   }
 
-  .navLink {
-    font-size: 13px;
+  .pillContainer {
+    height: 56px;
+    padding: 6px 8px 6px 20px;
+    border-radius: 9999px;
+  }
+
+  .logoImage {
+    height: 28px;
+  }
+
+  .right {
+    gap: 14px;
+  }
+
+  .navVacancies {
+    font-size: 14px;
+    padding: 6px 4px;
+  }
+
+  .orangeBadge {
+    top: 2px;
+    right: -10px;
+    min-width: 16px;
+    height: 16px;
+    font-size: 9.5px;
+  }
+
+  .jobAlertBtn {
+    padding: 8px 16px;
+    font-size: 13.5px;
+    gap: 6px;
+  }
+
+  .bellIcon {
+    width: 16px;
+    height: 16px;
   }
 }
 
-@media (max-width: 1024px) {
-  .nav {
-    display: none;
+@media (max-width: 520px) {
+  .headerWrapper {
+    padding: 10px 12px 6px;
   }
 
-  .right .loginBtn,
-  .right .registerBtn,
-  .right .langWrapper {
+  .pillContainer {
+    height: 52px;
+    padding: 4px 6px 4px 16px;
+  }
+
+  .logoImage {
+    height: 24px;
+  }
+
+  .navVacancies {
     display: none;
+    /* In very small screens, menu drawer has Vacancies */
+  }
+
+  .jobAlertBtn {
+    padding: 7px 14px;
+    font-size: 12.5px;
   }
 
   .mobileToggle {
     display: flex;
-  }
-}
-
-@media (max-width: 768px) {
-  .header {
-    border-bottom-left-radius: 22px;
-    border-bottom-right-radius: 22px;
-  }
-
-  .logoImage {
-    height: 36px;
-  }
-}
-
-@media (max-width: 480px) {
-  .header {
-    border-bottom-left-radius: 18px;
-    border-bottom-right-radius: 18px;
-  }
-
-  .logoImage {
-    height: 32px;
   }
 }
