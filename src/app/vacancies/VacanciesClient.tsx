@@ -160,7 +160,7 @@ export function VacanciesClient({ initialJobs }: VacanciesClientProps) {
         <div className={styles.mapBackground} aria-hidden="true" />
         <Container>
           <div className={styles.heroInner}>
-            <span className={styles.badge}>Global Opportunities</span>
+            <span ></span>
             <h1 className={styles.title}>Explore International Vacancies</h1>
             <p className={styles.subtitle}>
               Browse verified job opportunities with premier technology and corporate leaders across Europe, Asia, and the Americas.

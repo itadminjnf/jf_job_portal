@@ -26,7 +26,7 @@ const opportunities = [
   { name: 'Job Alert', href: '/job-alert' },
 ]
 const company = [
-  { name: 'About Jackson & Frank', href: 'https://www.jacksonandfrank.com/' },
+  { name: 'About Jackson & Frank', href: 'https://www.jacksonandfrank.com/about-us' },
   { name: 'Careers', href: '/vacancies' },
 ]
 const year = new Date().getFullYear()

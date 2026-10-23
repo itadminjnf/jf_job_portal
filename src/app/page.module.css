@@ -1,6 +1,7 @@
 .pageWrapper {
   width: 100%;
   overflow-x: hidden;
+  margin-top: -8%;
 }
 
 .bannersSection {
