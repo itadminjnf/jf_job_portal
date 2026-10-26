@@ -1,20 +1,25 @@
-.bannerGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin: 64px 0;
-}
+/* ==========================================================================
+   Blog & Career Insights Banner Card
+   Location: src/components/home/HiringBanner.module.css
+   ========================================================================== */
 
-.hiringCard {
-  background-color: #F8FAFC;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+.card {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 16px;
   overflow: hidden;
   display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  align-items: center;
-  min-height: 280px;
-  box-shadow: var(--shadow-sm);
+  grid-template-columns: 0.9fr 1.1fr;
+  align-items: stretch;
+  min-height: 290px;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -10px rgba(15, 23, 42, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
 }
 
 .imageWrapper {
@@ -22,6 +27,7 @@
   width: 100%;
   position: relative;
   min-height: 240px;
+  overflow: hidden;
 }
 
 .image {
@@ -29,70 +35,173 @@
   height: 100%;
   object-fit: cover;
   object-position: center top;
+  transition: transform 0.4s ease;
 }
 
+.card:hover .image {
+  transform: scale(1.04);
+}
+
+/* Floating badge over image */
+.imageBadge {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 2;
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38BDF8;
+  box-shadow: 0 0 8px #38BDF8;
+}
+
+/* Content Area */
 .content {
-  padding: 32px 32px 32px 16px;
+  padding: 28px 28px 28px 24px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.title {
-  font-size: 26px;
-  font-weight: 800;
-  color: var(--color-navy);
-  line-height: 1.2;
+/* Category Eyebrow Tag */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2563EB;
+  background: rgba(37, 99, 235, 0.08);
+  padding: 4px 10px;
+  border-radius: 6px;
   margin-bottom: 12px;
+  align-self: flex-start;
+}
+
+.tag svg {
+  color: #2563EB;
+  flex-shrink: 0;
+}
+
+/* Title */
+.title {
+  font-size: 23px;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.25;
+  margin: 0 0 10px 0;
   letter-spacing: -0.02em;
 }
 
+/* Description */
 .description {
-  font-size: 14px;
+  font-size: 13.5px;
   line-height: 1.55;
-  color: var(--color-muted);
-  margin-bottom: 24px;
+  color: #475569;
+  margin: 0 0 16px 0;
 }
 
+/* Topic Pills */
+.topicPills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.pill {
+  font-size: 11px;
+  font-weight: 600;
+  color: #334155;
+  background: #F1F5F9;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid #E2E8F0;
+  transition: all 0.15s ease;
+}
+
+.card:hover .pill {
+  border-color: #CBD5E1;
+  background: #E2E8F0;
+}
+
+/* Orange Gradient Action Button */
 .btn {
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background-color: var(--color-blue);
-  color: var(--color-white);
-  padding: 10px 22px;
-  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #F7931E 0%, #EA7A07 100%);
+  color: #ffffff;
+  padding: 11px 22px;
+  border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
-  transition: background-color var(--transition-fast);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(247, 147, 30, 0.35);
+  font-family: inherit;
 }
 
 .btn:hover {
-  background-color: var(--color-blue-dark);
+  background: linear-gradient(135deg, #FF9E2C 0%, #F7850F 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(247, 147, 30, 0.45);
 }
 
+.btn svg {
+  transition: transform 0.2s ease;
+}
+
+.btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* Responsive */
 @media (max-width: 1024px) {
-  .bannerGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 640px) {
-  .hiringCard {
-    grid-template-columns: 1fr;
-  }
-
-  .imageWrapper {
-    height: 200px;
+  .title {
+    font-size: 21px;
   }
 
   .content {
     padding: 24px;
   }
+}
+
+@media (max-width: 640px) {
+  .card {
+    grid-template-columns: 1fr;
+  }
+
+  .imageWrapper {
+    height: 200px;
+    min-height: 200px;
+  }
+
+  .content {
+    padding: 20px;
+  }
 
   .title {
-    font-size: 22px;
+    font-size: 20px;
   }
 }
