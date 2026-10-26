@@ -1,5 +1,4 @@
 .page {
-  padding: 0 0 80px;
   background-color: var(--color-white);
   margin-top: -8%;
 }
@@ -73,6 +72,7 @@
 
 .contentSection {
   padding-top: 56px;
+  padding-bottom: 80px;
 }
 
 .layout {
@@ -133,6 +133,7 @@
 
   .contentSection {
     padding-top: 40px;
+    padding-bottom: 60px;
   }
 
   .layout {
@@ -156,6 +157,7 @@
 
   .contentSection {
     padding-top: 32px;
+    padding-bottom: 48px;
   }
 }
 

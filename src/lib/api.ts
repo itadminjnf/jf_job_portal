@@ -44,7 +44,8 @@ export const API_ENDPOINTS = {
   forms: {
     jobAlert: '/jobalert-form',
     vacancyApplication: (vacancyId: string | number) => `/vacancy_application/${encodeURIComponent(String(vacancyId))}`,
-    // vacancyApplication: (vacancyId: string | number) => `/open_application/${encodeURIComponent(String(vacancyId))}`,
+    openApplication: '/open_application',
+    openApplicationSubmit: (id: string | number) => `/open_application/${encodeURIComponent(String(id))}`,
   },
 } as const;
 
@@ -1167,5 +1168,66 @@ export async function submitVacancyApplication(
 
   return await response.json();
 }
+
+/**
+ * Fetches the Open Application form definition from OTYS API.
+ */
+export async function getOpenApplicationForm(): Promise<OtysRawFormResponse> {
+  return await apiRequest<OtysRawFormResponse>(
+    API_ENDPOINTS.forms.openApplication,
+    { method: 'GET' }
+  );
+}
+
+/**
+ * Submits the Open Application form to OTYS API.
+ */
+export async function submitOpenApplication(
+  id: string | number,
+  payload: {
+    answers: Record<string, string | string[]>;
+    metaData?: Record<string, unknown> | null;
+  }
+): Promise<any> {
+  const response = await authenticatedFetch(
+    API_ENDPOINTS.forms.openApplicationSubmit(id),
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/ld+json',
+        Accept: 'application/ld+json, application/json',
+      },
+      body: JSON.stringify(payload),
+    }
+  );
+
+  if (!response.ok) {
+    const errorBody = await response.text().catch(() => '');
+    let detailMsg = errorBody;
+
+    try {
+      const parsed = JSON.parse(errorBody);
+      if (Array.isArray(parsed.violations) && parsed.violations.length > 0) {
+        detailMsg = parsed.violations
+          .map((v: any) => `${v.message || v.code || 'Invalid field'}`)
+          .join('. ');
+      } else if (parsed.detail) {
+        detailMsg = parsed.detail;
+      } else if (parsed.description) {
+        detailMsg = parsed.description;
+      }
+    } catch {
+      // not JSON format
+    }
+
+    const err = new Error(detailMsg || `Open application submission failed [${response.status}]`);
+    (err as any).status = response.status;
+    (err as any).detail = detailMsg;
+    throw err;
+  }
+
+  return await response.json();
+}
+
 
 

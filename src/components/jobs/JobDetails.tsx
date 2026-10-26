@@ -430,47 +430,65 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
 
       {/* 2. Top Header Job Box */}
       <header className={styles.headerCard}>
-        <h1 className={styles.jobTitle}>{job.title}</h1>
+        <div className={styles.headerCardInner}>
+          <div className={styles.headerCardLeft}>
+            <h1 className={styles.jobTitle}>{job.title}</h1>
 
-        <div className={styles.companyRow}>
-          <div className={styles.companyLogoBox}>
-            <img
-              src="/app/favicon.ico"
-              alt="Jackson & Frank"
-              className={styles.companyLogoImg}
-            />
-          </div>
-          <span className={styles.companyName}>
-            {job.company || 'Jackson & Frank Client'}
-          </span>
-          <span className={styles.verifiedBadge}>
-            <CheckCircle2 size={13} strokeWidth={2.5} />
-            <span>Verified</span>
-          </span>
-        </div>
-
-        <div className={styles.metaRow}>
-          <div className={styles.metaItem}>
-            <MapPin size={15} />
-            <span>{job.location}</span>
-          </div>
-
-          <div className={styles.metaItem}>
-            <Briefcase size={15} />
-            <span>{displayType}</span>
-          </div>
-
-          <div className={styles.metaItem}>
-            <Home size={15} />
-            <span>{displayWorkModel}</span>
-          </div>
-
-          {Boolean((job as any).referenceNumber && typeof (job as any).referenceNumber === 'string' && !(job as any).referenceNumber.match(/^[a-zA-Z0-9_-]{12,}$/)) && (
-            <div className={styles.metaItem}>
-              <Hash size={15} />
-              <span>Ref: {(job as any).referenceNumber}</span>
+            <div className={styles.companyRow}>
+              <div className={styles.companyLogoBox}>
+                <img
+                  src="/app/favicon.ico"
+                  alt="Jackson & Frank"
+                  className={styles.companyLogoImg}
+                />
+              </div>
+              <span className={styles.companyName}>
+                {job.company || 'Jackson & Frank Client'}
+              </span>
+              <span className={styles.verifiedBadge}>
+                <CheckCircle2 size={13} strokeWidth={2.5} />
+                <span>Verified</span>
+              </span>
             </div>
-          )}
+
+            <div className={styles.metaRow}>
+              <div className={styles.metaItem}>
+                <MapPin size={15} />
+                <span>{job.location}</span>
+              </div>
+
+              <div className={styles.metaItem}>
+                <Briefcase size={15} />
+                <span>{displayType}</span>
+              </div>
+
+              <div className={styles.metaItem}>
+                <Home size={15} />
+                <span>{displayWorkModel}</span>
+              </div>
+
+              {Boolean((job as any).referenceNumber && typeof (job as any).referenceNumber === 'string' && !(job as any).referenceNumber.match(/^[a-zA-Z0-9_-]{12,}$/)) && (
+                <div className={styles.metaItem}>
+                  <Hash size={15} />
+                  <span>Ref: {(job as any).referenceNumber}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.headerCardRight}>
+            <button
+              type="button"
+              onClick={scrollToApply}
+              className={styles.primaryApplyBtn}
+            >
+              <span>Apply Now</span>
+              <ArrowRight size={16} strokeWidth={2.5} />
+            </button>
+            <p className={styles.quickApplyNote}>
+              Takes only 2 minutes • Quick apply with your CV
+            </p>
+          </div>
         </div>
       </header>
 
@@ -671,22 +689,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
 
         {/* Right Column: Sidebar */}
         <aside className={styles.sidebar}>
-          {/* Sidebar 1: Primary Action Card */}
-          <div className={styles.actionCard}>
-            <button
-              type="button"
-              onClick={scrollToApply}
-              className={styles.primaryApplyBtn}
-            >
-              <span>Apply Now</span>
-              <ArrowRight size={16} strokeWidth={2.5} />
-            </button>
-            <p className={styles.quickApplyNote}>
-              Takes only 2 minutes • Quick apply with your CV
-            </p>
-          </div>
-
-          {/* Sidebar 2: About the Company */}
+          {/* Sidebar 1: About the Company */}
           <div className={styles.sidebarCard}>
             <div className={styles.aboutHeader}>
               <div className={styles.aboutLogoBox}>

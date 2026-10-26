@@ -8,6 +8,7 @@ import { JobCategories } from '@/components/home/JobCategories';
 import { HiringBanner } from '@/components/home/HiringBanner';
 import { GlobalPresence } from '@/components/home/GlobalPresence';
 import { Container } from '@/components/common/Container';
+import { ProjectCtaSection } from '@/components/common/ProjectCtaSection';
 import styles from './page.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -42,6 +43,9 @@ export default function HomePage() {
           </div>
         </Container>
       </section>
+
+      {/* 9. Can't find the project CTA & Open Application */}
+      <ProjectCtaSection />
     </div>
   );
 }
