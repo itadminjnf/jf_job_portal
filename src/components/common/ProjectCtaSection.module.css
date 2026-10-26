@@ -4,131 +4,353 @@
    ========================================================================== */
 
 .section {
-  background-color: #243c68;
-  padding: 64px 24px;
-  width: 100%;
-  box-sizing: border-box;
   position: relative;
+  width: 100%;
+  background-color: #070F22;
   overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Background Image Container */
+.bgImageWrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 58%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.bgImage {
+  object-fit: cover;
+  object-position: left center;
+}
+
+/* Dark Navy Gradient Fade from left photo into solid navy on right */
+.gradientOverlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    linear-gradient(to right, rgba(7, 15, 34, 0.2) 0%, rgba(7, 15, 34, 0.6) 35%, rgba(7, 15, 34, 0.92) 60%, #070F22 100%),
+    linear-gradient(to bottom, rgba(7, 15, 34, 0.4) 0%, transparent 20%, transparent 80%, rgba(7, 15, 34, 0.7) 100%);
 }
 
 .container {
-  max-width: 1100px;
+  max-width: 1280px;
   margin: 0 auto;
-  text-align: center;
+  padding: 80px 32px;
+  position: relative;
+  z-index: 2;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: flex-end;
+  box-sizing: border-box;
 }
 
+.contentCol {
+  width: 100%;
+  max-width: 630px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+/* Eyebrow Pill / Tag */
+.eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #38BDF8;
+  margin-bottom: 14px;
+}
+
+/* Title */
 .title {
   color: #ffffff;
-  font-size: 34px;
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.02em;
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
   margin: 0 0 16px 0;
   font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+/* Subtitle */
 .subtitle {
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.5;
-  max-width: 680px;
-  margin: 0 auto 32px auto;
-  opacity: 0.95;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+  margin: 0 0 28px 0;
+  max-width: 580px;
 }
 
-.buttonGroup {
+/* Glassmorphic Stats Card */
+.statsCard {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  margin-bottom: 28px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.statIconWrap {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
+  color: #38BDF8;
+  flex-shrink: 0;
 }
 
-/* Orange Pill: Create a Job alert */
-.orangeBtn {
-  background-color: #f97316;
+.statText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.statValue {
+  font-size: 15px;
+  font-weight: 700;
   color: #ffffff;
-  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.statLabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.statDivider {
+  width: 1px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 0 12px;
+  flex-shrink: 0;
+}
+
+/* Buttons Group */
+.buttonGroup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* Orange Button: Create a Job alert */
+.orangeBtn {
+  background: linear-gradient(135deg, #F7931E 0%, #EA7A07 100%);
+  color: #ffffff;
+  font-size: 15px;
   font-weight: 600;
-  padding: 12px 28px;
-  border-radius: 9999px;
+  padding: 13px 26px;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3);
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  text-decoration: none;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(247, 147, 30, 0.38);
+  transition: all 0.25s ease;
+  font-family: inherit;
 }
 
 .orangeBtn:hover {
-  background-color: #ea580c;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.4);
+  background: linear-gradient(135deg, #FF9E2C 0%, #F7850F 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(247, 147, 30, 0.5);
 }
 
 .orangeBtn:active {
   transform: translateY(0);
 }
 
-/* Dark Navy Pill: Open application */
+.orangeBtn svg {
+  transition: transform 0.2s ease;
+}
+
+.orangeBtn:hover svg {
+  transform: translateX(3px);
+}
+
+/* Translucent Navy Button: Open application */
 .navyBtn {
-  background-color: #172554;
+  background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  padding: 12px 28px;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 13px 26px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  text-decoration: none;
+  gap: 8px;
+  transition: all 0.25s ease;
+  font-family: inherit;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 .navyBtn:hover {
-  background-color: #1e3a8a;
+  background: rgba(255, 255, 255, 0.14);
   border-color: rgba(255, 255, 255, 0.4);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 .navyBtn:active {
   transform: translateY(0);
 }
 
-@media (max-width: 640px) {
-  .section {
-    padding: 48px 20px;
+.navyBtn svg {
+  transition: transform 0.2s ease;
+}
+
+.navyBtn:hover svg {
+  transform: translateX(3px);
+}
+
+/* Trust / Security Note */
+.trustNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 20px;
+}
+
+.trustNote svg {
+  color: #38BDF8;
+  flex-shrink: 0;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1080px) {
+  .bgImageWrap {
+    width: 50%;
+  }
+
+  .contentCol {
+    max-width: 540px;
+  }
+
+  .title {
+    font-size: 32px;
+  }
+
+  .statsCard {
+    padding: 14px 16px;
+  }
+
+  .statValue {
+    font-size: 13.5px;
+  }
+
+  .statLabel {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 860px) {
+  .bgImageWrap {
+    width: 100%;
+    opacity: 0.22;
+  }
+
+  .gradientOverlay {
+    background: linear-gradient(to bottom, rgba(7, 15, 34, 0.7) 0%, rgba(7, 15, 34, 0.95) 100%);
+  }
+
+  .container {
+    justify-content: center;
+    padding: 60px 24px;
+  }
+
+  .contentCol {
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+
+  .subtitle {
+    margin-inline: auto;
+  }
+
+  .statsCard {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 12px;
+    padding: 18px 20px;
+  }
+
+  .statDivider {
+    display: none;
+  }
+
+  .buttonGroup {
+    justify-content: center;
+  }
+
+  .trustNote {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .container {
+    padding: 48px 16px;
   }
 
   .title {
     font-size: 26px;
-    margin-bottom: 12px;
   }
 
   .subtitle {
-    font-size: 15px;
-    margin-bottom: 24px;
+    font-size: 14px;
+  }
+
+  .statsCard {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .buttonGroup {
     flex-direction: column;
     width: 100%;
-    gap: 12px;
   }
 
   .orangeBtn,
   .navyBtn {
     width: 100%;
-    max-width: 320px;
+    justify-content: center;
   }
 }
