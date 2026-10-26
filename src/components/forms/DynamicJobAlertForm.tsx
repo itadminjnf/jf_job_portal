@@ -9,6 +9,7 @@ import {
 } from '@/lib/api';
 import styles from './DynamicJobAlertForm.module.css';
 import { FileText, Globe, Building2, Sparkles, Calendar } from 'lucide-react';
+import { Loader } from '@/components/common/Loader';
 
 interface DynamicJobAlertFormProps {
   initialFormDefinition?: NormalizedJobAlertForm;
@@ -760,7 +761,7 @@ export function DynamicJobAlertForm({
                 className={styles.orangeSubmitBtn}
               >
                 {isSubmitting ? (
-                  <span>Creating...</span>
+                  <Loader variant="button" size="sm" color="white" text="Creating..." />
                 ) : (
                   <span>Create Jobalert</span>
                 )}

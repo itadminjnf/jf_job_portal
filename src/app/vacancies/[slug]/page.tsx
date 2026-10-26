@@ -6,7 +6,7 @@ import { JobDetails } from '@/components/jobs/JobDetails';
 import { getJobBySlug, getAllJobs } from '@/lib/api';
 import styles from './vacancy-details.module.css';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 86400; // 24-hour cache for server & client router
 
 export default async function VacancyDetailsPage({
   params,

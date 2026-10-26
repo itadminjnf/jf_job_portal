@@ -33,6 +33,7 @@ import {
 import { useJobAlertModal } from '@/context/JobAlertModalContext';
 import { Job } from '@/types/job';
 import { cleanRichHtml, translateDutchToEnglish } from '@/lib/utils';
+import { Loader } from '@/components/common/Loader';
 import styles from './JobDetails.module.css';
 
 interface JobDetailsProps {
@@ -1001,7 +1002,11 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
               disabled={formStatus === 'submitting'}
               className={styles.submitAppBtn}
             >
-              {formStatus === 'submitting' ? 'Submitting...' : 'Send application'}
+              {formStatus === 'submitting' ? (
+                <Loader variant="button" size="sm" color="white" text="Submitting application..." />
+              ) : (
+                'Send application'
+              )}
             </button>
           </form>
         )}

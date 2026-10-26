@@ -653,11 +653,9 @@ export async function getAllJobs(filterParams?: VacancyFilterParams): Promise<Jo
   try {
     const rawData = await apiRequest<any>(endpoint, { method: 'GET' }, featuredJobs);
     const jobs = mapOtysCollectionToJobs(rawData);
-    console.log("job data", jobs);
 
     return jobs.length > 0 ? jobs : featuredJobs;
   } catch {
-    console.log("job featuredJobs", featuredJobs);
     return featuredJobs;
   }
 }
