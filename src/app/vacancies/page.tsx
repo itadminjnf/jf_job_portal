@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { getAllJobs } from '@/lib/api';
 import { VacanciesClient } from './VacanciesClient';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 86400; // 24-hour cache for server & client router
 
 export default async function VacanciesPage() {
   // Fetch all real vacancies from OTYS API (e.g. 50 items)
