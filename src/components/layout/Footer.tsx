@@ -10,7 +10,6 @@ import { OpenApplicationModal } from '@/components/forms/OpenApplicationModal'
 const opportunities = [
   { name: 'Vacancies', href: '/vacancies' },
   { name: 'Job Alert', href: '/job-alert' },
-  { name: 'Open Application', href: '#open-application' },
 ]
 const company = [
   { name: 'About Jackson & Frank', href: 'https://www.jacksonandfrank.com/about-us' },
@@ -64,9 +63,6 @@ export default function Footer() {
                     if (link.href === '/job-alert') {
                       e.preventDefault();
                       openJobAlertModal();
-                    } else if (link.href === '#open-application') {
-                      e.preventDefault();
-                      setIsOpenAppModalOpen(true);
                     }
                   }}
                 >
@@ -86,29 +82,17 @@ export default function Footer() {
               )}
             </div>
 
-            <div className={`${styles.flCol} ${styles.openAppCol}`}>
+            <div className={styles.flCol}>
               <h4>Open Application</h4>
-              <p className={styles.openAppDesc}>
-                Can&apos;t find your ideal role today? Submit your CV directly and let our global talent specialists match you with upcoming opportunities.
-              </p>
-              <button
-                type="button"
-                onClick={() => setIsOpenAppModalOpen(true)}
-                className={styles.openAppBtn}
-                aria-label="Submit an open application"
+              <Link
+                href="#open-application"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsOpenAppModalOpen(true);
+                }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
-                  <polyline points="10 9 9 9 8 9" />
-                </svg>
-                <span>Submit Open Application</span>
-              </button>
-              <span className={styles.openAppHint}>
-                Takes only 2 minutes • Direct review by recruiters
-              </span>
+                Submit Open Application
+              </Link>
             </div>
           </div>
 
