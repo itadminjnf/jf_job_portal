@@ -44,7 +44,8 @@ export const API_ENDPOINTS = {
   forms: {
     jobAlert: '/jobalert-form',
     vacancyApplication: (vacancyId: string | number) => `/vacancy_application/${encodeURIComponent(String(vacancyId))}`,
-    // vacancyApplication: (vacancyId: string | number) => `/open_application/${encodeURIComponent(String(vacancyId))}`,
+    openApplication: '/open_application',
+    openApplicationSubmit: (id: string | number) => `/open_application/${encodeURIComponent(String(id))}`,
   },
 } as const;
 
@@ -538,14 +539,29 @@ export function mapOtysVacancyToJob(raw: any): Job {
     if (regionCrit?.options?.length) region = regionCrit.options.map((o: any) => o.name).filter(Boolean).join(', ');
   }
 
-  // Calculate Posted Time
+  // Calculate Posted Time & Date Timestamp for Sorting
+  // Priority: lastModified or datePublished or entryDateTime
+  const rawDateStr = raw.lastModified || raw.datePublished || raw.entryDateTime;
   let postedTime = 'Recently';
-  if (raw.entryDateTime) {
-    const entryDate = new Date(raw.entryDateTime);
-    const diffDays = Math.floor((Date.now() - entryDate.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays <= 0) postedTime = 'Today';
-    else if (diffDays === 1) postedTime = '1 day ago';
-    else postedTime = `${diffDays} days ago`;
+  let dateTimestamp = 0;
+
+  if (rawDateStr) {
+    const entryDate = new Date(rawDateStr);
+    if (!isNaN(entryDate.getTime())) {
+      dateTimestamp = entryDate.getTime();
+      const diffMs = Date.now() - dateTimestamp;
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      if (diffDays <= 0) postedTime = 'Today';
+      else if (diffDays === 1) postedTime = '1 day ago';
+      else if (diffDays < 7) postedTime = `${diffDays} days ago`;
+      else if (diffDays < 30) {
+        const weeks = Math.floor(diffDays / 7);
+        postedTime = weeks === 1 ? '1 week ago' : `${weeks} weeks ago`;
+      } else {
+        const months = Math.floor(diffDays / 30);
+        postedTime = months <= 1 ? '1 month ago' : `${months} months ago`;
+      }
+    }
   }
 
   // Safe fallback logos from public directory
@@ -573,6 +589,7 @@ export function mapOtysVacancyToJob(raw: any): Job {
     experience,
     skills,
     postedTime,
+    dateTimestamp,
     salary,
     description,
     industry,
@@ -603,7 +620,9 @@ export function mapOtysCollectionToJobs(data: any): Job[] {
 
   // If already mapped Job[] array (such as fallback data), return directly
   if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'object' && ('slug' in data[0] || 'postedTime' in data[0])) {
-    return data as Job[];
+    const list = [...(data as Job[])];
+    list.sort((a, b) => (b.dateTimestamp || 0) - (a.dateTimestamp || 0));
+    return list;
   }
 
   let list: any[] = [];
@@ -623,7 +642,16 @@ export function mapOtysCollectionToJobs(data: any): Job[] {
   }
 
   if (list.length === 0) return [];
-  return list.map(mapOtysVacancyToJob);
+  const mapped = list.map(mapOtysVacancyToJob);
+
+  // Sort latest first (newest dateTimestamp first)
+  mapped.sort((a, b) => {
+    const timeA = a.dateTimestamp || 0;
+    const timeB = b.dateTimestamp || 0;
+    return timeB - timeA;
+  });
+
+  return mapped;
 }
 
 // ============================================================================
@@ -1167,5 +1195,66 @@ export async function submitVacancyApplication(
 
   return await response.json();
 }
+
+/**
+ * Fetches the Open Application form definition from OTYS API.
+ */
+export async function getOpenApplicationForm(): Promise<OtysRawFormResponse> {
+  return await apiRequest<OtysRawFormResponse>(
+    API_ENDPOINTS.forms.openApplication,
+    { method: 'GET' }
+  );
+}
+
+/**
+ * Submits the Open Application form to OTYS API.
+ */
+export async function submitOpenApplication(
+  id: string | number,
+  payload: {
+    answers: Record<string, string | string[]>;
+    metaData?: Record<string, unknown> | null;
+  }
+): Promise<any> {
+  const response = await authenticatedFetch(
+    API_ENDPOINTS.forms.openApplicationSubmit(id),
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/ld+json',
+        Accept: 'application/ld+json, application/json',
+      },
+      body: JSON.stringify(payload),
+    }
+  );
+
+  if (!response.ok) {
+    const errorBody = await response.text().catch(() => '');
+    let detailMsg = errorBody;
+
+    try {
+      const parsed = JSON.parse(errorBody);
+      if (Array.isArray(parsed.violations) && parsed.violations.length > 0) {
+        detailMsg = parsed.violations
+          .map((v: any) => `${v.message || v.code || 'Invalid field'}`)
+          .join('. ');
+      } else if (parsed.detail) {
+        detailMsg = parsed.detail;
+      } else if (parsed.description) {
+        detailMsg = parsed.description;
+      }
+    } catch {
+      // not JSON format
+    }
+
+    const err = new Error(detailMsg || `Open application submission failed [${response.status}]`);
+    (err as any).status = response.status;
+    (err as any).detail = detailMsg;
+    throw err;
+  }
+
+  return await response.json();
+}
+
 
 

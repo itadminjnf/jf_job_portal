@@ -8,6 +8,7 @@ import { PopularFilters } from '@/components/home/PopularFilters';
 import { JobGrid } from '@/components/jobs/JobGrid';
 import { JobFilters } from '@/components/jobs/JobFilters';
 import { Job } from '@/types/job';
+import { ProjectCtaSection } from '@/components/common/ProjectCtaSection';
 import styles from './vacancies.module.css';
 
 interface VacanciesClientProps {
@@ -69,7 +70,7 @@ export function VacanciesClient({ initialJobs }: VacanciesClientProps) {
 
   // Filter the live jobs using all criteria
   const filteredJobs = useMemo(() => {
-    return initialJobs.filter((job) => {
+    const filtered = initialJobs.filter((job) => {
       // 1. Location match
       const matchLoc =
         !selectedLocation ||
@@ -127,6 +128,9 @@ export function VacanciesClient({ initialJobs }: VacanciesClientProps) {
 
       return matchLoc && matchType && matchSearch && matchChip;
     });
+
+    // Always sort latest first
+    return [...filtered].sort((a, b) => (b.dateTimestamp || 0) - (a.dateTimestamp || 0));
   }, [initialJobs, selectedLocation, selectedType, searchTerm, activeChip]);
 
   // Pagination calculation: 9 items per page
@@ -296,6 +300,9 @@ export function VacanciesClient({ initialJobs }: VacanciesClientProps) {
           </div>
         </Container>
       </section>
+
+      {/* Can't find the project CTA & Open Application */}
+      <ProjectCtaSection />
     </div>
   );
 }

@@ -62,6 +62,15 @@ export function Header() {
             )}
           </Link>
 
+          <Link
+            href="https://jacksonandfrank.com/blog"
+            className={styles.navBlog}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>Blog</span>
+          </Link>
+
           {/* Jobalert Navy Pill Button */}
           <button
             type="button"

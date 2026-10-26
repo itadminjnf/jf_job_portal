@@ -49,8 +49,9 @@
   margin-left: auto;
 }
 
-/* Vacancies Nav Item */
-.navVacancies {
+/* Vacancies & Blog Nav Items */
+.navVacancies,
+.navBlog {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -64,7 +65,8 @@
   white-space: nowrap;
 }
 
-.navVacancies:hover {
+.navVacancies:hover,
+.navBlog:hover {
   color: #2563EB;
 }
 
@@ -166,7 +168,8 @@
     gap: 14px;
   }
 
-  .navVacancies {
+  .navVacancies,
+  .navBlog {
     font-size: 14px;
     padding: 6px 4px;
   }
@@ -191,7 +194,7 @@
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 580px) {
   .headerWrapper {
     padding: 10px 12px 6px;
   }
@@ -205,9 +208,10 @@
     height: 24px;
   }
 
-  .navVacancies {
+  .navVacancies,
+  .navBlog {
     display: none;
-    /* In very small screens, menu drawer has Vacancies */
+    /* In small screens, menu drawer has Vacancies & Blog */
   }
 
   .jobAlertBtn {

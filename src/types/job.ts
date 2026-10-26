@@ -21,6 +21,7 @@ export interface Job {
   experience: string;
   skills: string[];
   postedTime: string;
+  dateTimestamp?: number;
   salary?: string;
   description?: string;
   responsibilities?: string[];
