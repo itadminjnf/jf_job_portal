@@ -6,7 +6,7 @@ export const siteConfig = {
   ogImage: '/images/hero/hero-woman.png',
   links: {
     linkedin: 'https://linkedin.com/company/jackson-frank',
-    twitter: 'https://twitter.com/jacksonfrank',
+    website: 'https://jacksonandfrank.com/',
   },
   contact: {
     email: 'info@jacksonfrank.com',
