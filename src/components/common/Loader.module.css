@@ -1,0 +1,158 @@
+/* ==========================================================================
+   Reusable Modern Loader Component
+   Location: src/components/common/Loader.module.css
+   ========================================================================== */
+
+.wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Variants --- */
+.inline {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.button {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: auto;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  min-height: 280px;
+  width: 100%;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+  border-radius: inherit;
+  padding: 24px;
+}
+
+.page {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+}
+
+/* --- Spinner Animation & Sizes --- */
+.spinner {
+  display: inline-block;
+  border-radius: 50%;
+  animation: spin 0.75s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  box-sizing: border-box;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sizes */
+.sizeSm {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+
+.sizeMd {
+  width: 24px;
+  height: 24px;
+  border-width: 2.5px;
+}
+
+.sizeLg {
+  width: 38px;
+  height: 38px;
+  border-width: 3.5px;
+}
+
+.sizeXl {
+  width: 52px;
+  height: 52px;
+  border-width: 4px;
+}
+
+/* Colors */
+.colorPrimary {
+  border-style: solid;
+  border-color: rgba(30, 58, 138, 0.15);
+  border-top-color: #1e3a8a;
+  border-right-color: #2563eb;
+}
+
+.colorWhite {
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+}
+
+.colorNavy {
+  border-style: solid;
+  border-color: rgba(15, 23, 42, 0.15);
+  border-top-color: #0f172a;
+}
+
+.colorOrange {
+  border-style: solid;
+  border-color: rgba(249, 115, 22, 0.18);
+  border-top-color: #f97316;
+  border-right-color: #fb923c;
+}
+
+/* --- Typography --- */
+.text {
+  margin-top: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+.inlineText {
+  margin-top: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: inherit;
+}
+
+.subtext {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #64748b;
+  text-align: center;
+}
