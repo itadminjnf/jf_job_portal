@@ -8,6 +8,7 @@
   overflow: hidden;
   display: flex;
   align-items: center;
+  padding-top: 8%;
 }
 
 .mapBackground {
