@@ -85,13 +85,6 @@ let hasLoggedConfig = false;
 function logSafeAuthConfig(baseUrl: string, websiteId: string, hasKey: boolean): void {
   if (!hasLoggedConfig) {
     hasLoggedConfig = true;
-    console.log('[Auth Config]', {
-      environment: process.env.NODE_ENV,
-      baseUrl,
-      websiteId,
-      authEnabled: AUTH_API_ENABLED,
-      hasApiKey: hasKey,
-    });
   }
 }
 
