@@ -5,25 +5,12 @@ import { usePathname } from 'next/navigation'
 import styles from './Footer.module.css'
 import { useJobAlertModal } from '@/context/JobAlertModalContext'
 
-// Newsletter validation and helper
-const newsletterSchema = {
-  safeParse: (data: { email: string }) => {
-    const email = data?.email?.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email && emailRegex.test(email)) {
-      return { success: true as const, data: { email } };
-    }
-    return { success: false as const };
-  },
-};
-
-async function subscribeNewsletter(_email: string): Promise<{ success: boolean }> {
-  return { success: true };
-}
+import { OpenApplicationModal } from '@/components/forms/OpenApplicationModal'
 
 const opportunities = [
   { name: 'Vacancies', href: '/vacancies' },
   { name: 'Job Alert', href: '/job-alert' },
+  { name: 'Open Application', href: '#open-application' },
 ]
 const company = [
   { name: 'About Jackson & Frank', href: 'https://www.jacksonandfrank.com/about-us' },
@@ -34,31 +21,10 @@ const year = new Date().getFullYear()
 export default function Footer() {
   const pathname = usePathname()
   const { openJobAlertModal } = useJobAlertModal()
-  const [email, setEmail] = useState('')
-  const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
-  const subscribed = newsletterStatus === 'success'
+  const [isOpenAppModalOpen, setIsOpenAppModalOpen] = useState(false)
 
   // Ads landing page uses its own stripped-down CampaignFooter instead.
   if (pathname === '/hire-non-eu-employees-netherlands' || pathname?.startsWith('/germany/') || pathname?.startsWith('/germany')) return null
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (newsletterStatus === 'sending') return
-    const parsed = newsletterSchema.safeParse({ email })
-    if (!parsed.success) {
-      setNewsletterStatus('error')
-      return
-    }
-    setNewsletterStatus('sending')
-    const result = await subscribeNewsletter(parsed.data.email)
-    if (result.success) {
-      setNewsletterStatus('success')
-      setEmail('')
-      setTimeout(() => setNewsletterStatus('idle'), 4000)
-    } else {
-      setNewsletterStatus('error')
-    }
-  }
 
   return (
     <div className="home-content-scale">
@@ -98,6 +64,9 @@ export default function Footer() {
                     if (link.href === '/job-alert') {
                       e.preventDefault();
                       openJobAlertModal();
+                    } else if (link.href === '#open-application') {
+                      e.preventDefault();
+                      setIsOpenAppModalOpen(true);
                     }
                   }}
                 >
@@ -117,34 +86,29 @@ export default function Footer() {
               )}
             </div>
 
-            <div className={`${styles.flCol} ${styles.newsletterCol}`}>
-              <h4>Newsletter</h4>
-              <p className={styles.newsletterDesc}>Stay updated with latest HR insights and industry trends.</p>
-              <form className={styles.newsletterForm} onSubmit={handleSubscribe}>
-                <div className={styles.newsletterInputWrap}>
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={styles.newsletterInput}
-                    required
-                  />
-                  <svg className={styles.newsletterMailIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                    <polyline points="22,6 12,13 2,6" />
-                  </svg>
-                </div>
-                <button type="submit" className={styles.newsletterBtn} disabled={newsletterStatus === 'sending'}>
-                  {newsletterStatus === 'sending' ? 'Subscribing…' : subscribed ? 'Subscribed ✓' : 'Subscribe'}
-                </button>
-                {subscribed && (
-                  <span className={styles.newsletterSuccess}>Thank you for subscribing!</span>
-                )}
-                {newsletterStatus === 'error' && (
-                  <span className={styles.newsletterError}>Something went wrong. Please try again.</span>
-                )}
-              </form>
+            <div className={`${styles.flCol} ${styles.openAppCol}`}>
+              <h4>Open Application</h4>
+              <p className={styles.openAppDesc}>
+                Can&apos;t find your ideal role today? Submit your CV directly and let our global talent specialists match you with upcoming opportunities.
+              </p>
+              <button
+                type="button"
+                onClick={() => setIsOpenAppModalOpen(true)}
+                className={styles.openAppBtn}
+                aria-label="Submit an open application"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <polyline points="10 9 9 9 8 9" />
+                </svg>
+                <span>Submit Open Application</span>
+              </button>
+              <span className={styles.openAppHint}>
+                Takes only 2 minutes • Direct review by recruiters
+              </span>
             </div>
           </div>
 
@@ -175,6 +139,12 @@ export default function Footer() {
 
         </div>
       </footer>
+
+      {/* Open Application Modal */}
+      <OpenApplicationModal
+        isOpen={isOpenAppModalOpen}
+        onClose={() => setIsOpenAppModalOpen(false)}
+      />
     </div>
   )
 }
