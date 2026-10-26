@@ -27,6 +27,7 @@ const opportunities = [
 ]
 const company = [
   { name: 'About Jackson & Frank', href: 'https://www.jacksonandfrank.com/about-us' },
+  { name: 'Blog', href: 'https://jacksonandfrank.com/blog' },
 ]
 const year = new Date().getFullYear()
 

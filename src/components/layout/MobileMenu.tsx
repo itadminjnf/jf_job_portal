@@ -61,6 +61,8 @@ export function MobileMenu({ isOpen, onClose, vacanciesCount }: MobileMenuProps)
                 <li key={item.name}>
                   <Link
                     href={item.href}
+                    target={item.href.startsWith('http') ? '_blank' : undefined}
+                    rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                     className={`${styles.navLink} ${isActive ? styles.navLinkActive : ''}`}
                     onClick={(e) => {
                       if (isJobAlert) {
