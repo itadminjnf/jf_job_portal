@@ -29,16 +29,16 @@ export function GlobalPresence() {
       {/* Metrics Overlay on right */}
       <div className={styles.metricsOverlay}>
         <div className={styles.metricItem}>
-          <span className={styles.metricVal}>50+</span>
+          <span className={styles.metricVal}>17+</span>
           <span className={styles.metricLabel}>Countries</span>
         </div>
         <div className={styles.metricItem}>
-          <span className={styles.metricVal}>500+</span>
-          <span className={styles.metricLabel}>Clients</span>
+          <span className={styles.metricVal}>1,400+</span>
+          <span className={styles.metricLabel}>Placements</span>
         </div>
         <div className={styles.metricItem}>
-          <span className={styles.metricVal}>10,000+</span>
-          <span className={styles.metricLabel}>Placements</span>
+          <span className={styles.metricVal}>700+</span>
+          <span className={styles.metricLabel}>Trusted Companies</span>
         </div>
       </div>
     </div>
