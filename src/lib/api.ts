@@ -38,6 +38,10 @@ export const API_ENDPOINTS = {
     bySlug: (slug: string) => `/vacancies/slug/${encodeURIComponent(slug)}?includeUnpublishedTextfields=true`,
     details: (id: string | number) => `/vacancies/${encodeURIComponent(String(id))}?includeUnpublishedTextfields=true`,
   },
+  websites: {
+    details: (id: string | number) => `/websites/${encodeURIComponent(String(id))}`,
+    patch: (id: string | number) => `/websites/${encodeURIComponent(String(id))}`,
+  },
   files: {
     upload: '/files',
   },
@@ -63,6 +67,13 @@ export interface ApiRequestOptions<T = unknown> extends RequestInit {
    * Optional fallback data to serve if the request or authentication fails.
    */
   fallbackData?: T;
+  /**
+   * Next.js cache revalidation and tagging options.
+   */
+  next?: {
+    revalidate?: number | false;
+    tags?: string[];
+  };
 }
 
 /**
@@ -365,7 +376,10 @@ export function mapOtysVacancyToJob(raw: any): Job {
 
   const id = String(raw.id || raw.vacancyId || raw._id || Math.random().toString(36).substring(2, 9));
   const title = String(raw.title || raw.name || raw.vacancyTitle || 'Untitled Position');
-  const slug = String(raw.slug || raw.customSlug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || id);
+  const cleanRawSlug = typeof raw.slug === 'string' ? raw.slug.replace(/^\/+/, '').trim() : '';
+  const cleanCustomSlug = typeof raw.customSlug === 'string' ? raw.customSlug.replace(/^\/+/, '').trim() : '';
+  const titleSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const slug = cleanRawSlug || cleanCustomSlug || titleSlug || id;
   const company = String(raw.company || raw.relation?.name || 'Jackson & Frank');
   const rawLoc = String(raw.location || raw.city || '').trim();
   let city = '';
@@ -663,7 +677,7 @@ export async function getFeaturedJobs(filterParams?: VacancyFilterParams): Promi
   const endpoint = buildVacanciesUrl(filterParams);
 
   try {
-    const rawData = await apiRequest<any>(endpoint, { method: 'GET' }, fallback);
+    const rawData = await apiRequest<any>(endpoint, { method: 'GET', next: { tags: ['vacancies'] } }, fallback);
     const jobs = mapOtysCollectionToJobs(rawData);
     if (jobs.length > 0) {
       const featured = jobs.filter((j) => j.isFeatured);
@@ -679,7 +693,7 @@ export async function getAllJobs(filterParams?: VacancyFilterParams): Promise<Jo
   const endpoint = buildVacanciesUrl(filterParams);
 
   try {
-    const rawData = await apiRequest<any>(endpoint, { method: 'GET' }, featuredJobs);
+    const rawData = await apiRequest<any>(endpoint, { method: 'GET', next: { tags: ['vacancies'] } }, featuredJobs);
     const jobs = mapOtysCollectionToJobs(rawData);
 
     return jobs.length > 0 ? jobs : featuredJobs;
@@ -692,7 +706,7 @@ export async function getVacanciesCount(): Promise<number> {
   const endpoint = buildVacanciesUrl({ itemsPerPage: 100 });
 
   try {
-    const rawData = await apiRequest<any>(endpoint, { method: 'GET' }, null);
+    const rawData = await apiRequest<any>(endpoint, { method: 'GET', next: { tags: ['vacancies'] } }, null);
     if (rawData) {
       if (typeof rawData['hydra:totalItems'] === 'number') {
         return rawData['hydra:totalItems'];
@@ -718,7 +732,7 @@ export async function getJobBySlug(slug: string): Promise<Job | undefined> {
   try {
     const rawData = await apiRequest<any>(
       API_ENDPOINTS.vacancies.bySlug(slug),
-      { method: 'GET' }
+      { method: 'GET', next: { tags: ['vacancies', `vacancy-${slug}`] } }
     );
     if (rawData && !rawData.status) return mapOtysVacancyToJob(rawData);
   } catch {
@@ -729,7 +743,7 @@ export async function getJobBySlug(slug: string): Promise<Job | undefined> {
   try {
     const rawData = await apiRequest<any>(
       API_ENDPOINTS.vacancies.details(slug),
-      { method: 'GET' }
+      { method: 'GET', next: { tags: ['vacancies', `vacancy-${slug}`] } }
     );
     if (rawData && !rawData.status) return mapOtysVacancyToJob(rawData);
   } catch {
@@ -753,7 +767,7 @@ export async function getJobById(id: string | number): Promise<Job | undefined> 
   try {
     const rawData = await apiRequest<any>(
       API_ENDPOINTS.vacancies.details(id),
-      { method: 'GET' },
+      { method: 'GET', next: { tags: ['vacancies', `vacancy-${id}`] } },
       fallback
     );
     if (!rawData) return fallback;
@@ -1255,6 +1269,84 @@ export async function submitOpenApplication(
 
   return await response.json();
 }
+
+// ============================================================================
+// 10. OTYS WEBSITE CONFIGURATION & WEBHOOK INTEGRATION
+// ============================================================================
+
+export interface OtysWebsiteConfig {
+  id?: number | string;
+  name?: string;
+  externalUrl?: string;
+  webhookUrl?: string;
+  externalVacancyDetailUrlFormat?: string;
+  externalApplyUrlFormat?: string;
+  externalVacancyPreviewUrlFormat?: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Retrieves website configuration from OTYS Web API
+ * Reference: GET /api/websites/{id}
+ */
+export async function getOtysWebsite(
+  websiteId?: string | number
+): Promise<OtysWebsiteConfig | null> {
+  const { websiteId: envWebsiteId } = getAuthConfig();
+  const id = websiteId || envWebsiteId || '2';
+  try {
+    const data = await apiRequest<OtysWebsiteConfig>(
+      API_ENDPOINTS.websites.details(id),
+      { method: 'GET' }
+    );
+    return data;
+  } catch (error) {
+    console.error(`[OTYS Website API] Failed to fetch website ${id}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Updates website configuration in OTYS Web API (e.g. webhookUrl, externalVacancyDetailUrlFormat)
+ * Reference: PATCH /api/websites/{id} (https://webapi.otys.app/api#/Website/app_website_patch)
+ */
+export async function updateOtysWebsite(
+  patchData: Partial<OtysWebsiteConfig>,
+  websiteId?: string | number
+): Promise<OtysWebsiteConfig> {
+  const { websiteId: envWebsiteId } = getAuthConfig();
+  const id = websiteId || envWebsiteId || '2';
+
+  // API Platform / OTYS endpoints typically expect application/merge-patch+json
+  try {
+    const data = await apiRequest<OtysWebsiteConfig>(
+      API_ENDPOINTS.websites.patch(id),
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/merge-patch+json',
+        },
+        body: JSON.stringify(patchData),
+      }
+    );
+    return data;
+  } catch (firstError) {
+    throw firstError;
+    const data = await apiRequest<OtysWebsiteConfig>(
+      API_ENDPOINTS.websites.patch(id),
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(patchData),
+      }
+    );
+    return data;
+  }
+}
+
+
 
 
 

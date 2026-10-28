@@ -801,7 +801,7 @@ export function JobDetails({ job, similarJobs = [] }: JobDetailsProps) {
                 {similarJobs.map((sJob) => (
                   <Link
                     key={sJob.id}
-                    href={`/vacancies/${sJob.id}`}
+                    href={`/vacancies/${sJob.slug || sJob.id}`}
                     className={styles.similarItem}
                   >
                     <div className={styles.similarLogoBox}>

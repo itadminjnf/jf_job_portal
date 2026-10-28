@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getVacanciesCount } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
-export const revalidate = 60; // Cache for 60 seconds
+
 
 export async function GET() {
   try {
