@@ -27,7 +27,7 @@ export function JobCard({ job }: JobCardProps) {
       </div>
 
       {/* Job Title & Company */}
-      <Link href={`/vacancies/${job.id}`} className={styles.titleLink}>
+      <Link href={`/vacancies/${job.slug || job.id}`} className={styles.titleLink}>
         <h3 className={styles.title}>{job.title}</h3>
       </Link>
       <p className={styles.companyName}>{job.company}</p>
@@ -76,7 +76,7 @@ export function JobCard({ job }: JobCardProps) {
       {/* Footer: Posted time & View Job button */}
       <div className={styles.footer}>
         <span className={styles.postedTime}>{job.postedTime}</span>
-        <Link href={`/vacancies/${job.id}`} className={styles.viewJobBtn}>
+        <Link href={`/vacancies/${job.slug || job.id}`} className={styles.viewJobBtn}>
           <span>View Job</span>
           <ArrowRight size={14} strokeWidth={2.5} />
         </Link>
